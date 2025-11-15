@@ -9,6 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light theme">
+        <i class="fas fa-sun" id="theme-icon"></i>
+        <i class="fas fa-moon"></i>
+    </button>
+    
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -31,11 +37,6 @@
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
     </nav>
 
@@ -43,23 +44,6 @@
     <section class="hero">
         <div class="hero-background">
             <div class="gradient-mesh"></div>
-            <div class="floating-elements">
-                <div class="float-element" data-speed="0.5">
-                    <i class="fas fa-lightbulb"></i>
-                </div>
-                <div class="float-element" data-speed="0.8">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <div class="float-element" data-speed="0.3">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="float-element" data-speed="0.6">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="float-element" data-speed="0.9">
-                    <i class="fas fa-cogs"></i>
-                </div>
-            </div>
         </div>
         <div class="hero-content">
             <div class="hero-text">
@@ -122,10 +106,10 @@
                             <span>Risks Identified</span>
                         </div>
                         <div class="preview-chart">
-                            <div class="chart-bar" style="height: 60%"></div>
-                            <div class="chart-bar" style="height: 80%"></div>
-                            <div class="chart-bar" style="height: 45%"></div>
-                            <div class="chart-bar" style="height: 90%"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
                         </div>
                     </div>
                 </div>
@@ -311,12 +295,11 @@
             <div class="demo-container">
                 <div class="demo-input">
                     <h3>Try It Yourself</h3>
-                    <p>Enter a project idea and watch our AI create a complete plan:</p>
+                    <p>Enter a project idea and see the AI in action:</p>
                     <form class="demo-form" onsubmit="event.preventDefault(); runDemo();">
-                        <label for="demo-input" class="sr-only">Project idea</label>
-                        <textarea id="demo-input" class="demo-textarea" rows="6" aria-label="Project idea input" placeholder="e.g., Build a mobile app for task management with team collaboration features, deadline in 3 months, 15 hours per week available..."></textarea>
+                        <textarea id="demo-input" class="demo-textarea" rows="4" placeholder="Describe your project idea..."></textarea>
                         <div class="demo-form-actions">
-                            <button id="demo-generate" class="demo-generate glass-button primary" type="button" onclick="runDemo()" aria-live="polite">
+                            <button id="demo-generate" class="demo-generate glass-button primary" type="button" onclick="runDemo()">
                                 <i class="fas fa-magic"></i>
                                 <span>Generate Plan</span>
                             </button>
@@ -345,79 +328,30 @@
                 <p>Join thousands of users who have revolutionized their project management with AI-powered planning.</p>
                 <div class="cta-buttons">
                     <a href="/app" class="cta-button primary large">
-                        <span>Start Planning Free</span>
+                        <span>Start Planning Now</span>
                         <i class="fas fa-rocket"></i>
-                    </a>
-                    <a href="#" class="glass-button secondary" onclick="downloadSamplePDF(); return false;">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>Download Sample PDF</span>
                     </a>
                 </div>
                 <div class="cta-features">
                     <div class="cta-feature">
                         <i class="fas fa-check"></i>
-                        <span>Free to get started</span>
+                        <span>Free to start</span>
                     </div>
                     <div class="cta-feature">
                         <i class="fas fa-check"></i>
-                        <span>No credit card required</span>
-                    </div>
-                    <div class="cta-feature">
-                        <i class="fas fa-check"></i>
-                        <span>Cancel anytime</span>
+                        <span>No setup required</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
+    <!-- Simple Footer -->
+    <footer class="simple-footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="logo-container">
-                        <img src="{{ url_for('static', filename='image/logo-of-Plannerium-horizontal-with-tagline.png') }}" alt="Plannerium Logo" class="footer-logo-image">
-                    </div>
-                    <p>Intelligent multi-agent planning system powered by advanced AI technology.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Product</h4>
-                        <a href="#features" class="footer-link scroll-link">Features</a>
-                        <a href="#" class="footer-link">Pricing</a>
-                        <a href="#" class="footer-link">API</a>
-                        <a href="#" class="footer-link">Integrations</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Resources</h4>
-                        <a href="#" class="footer-link">Documentation</a>
-                        <a href="#" class="footer-link">Tutorials</a>
-                        <a href="#" class="footer-link">Blog</a>
-                        <a href="#" class="footer-link">Support</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <a href="#" class="footer-link">About</a>
-                        <a href="#" class="footer-link">Careers</a>
-                        <a href="#" class="footer-link">Contact</a>
-                        <a href="#" class="footer-link">Privacy</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Plannerium. All rights reserved.</p>
-                <div class="footer-legal">
-                    <a href="#" class="footer-link">Terms</a>
-                    <a href="#" class="footer-link">Privacy</a>
-                    <a href="#" class="footer-link">Cookies</a>
-                </div>
+            <div class="footer-logo-section">
+                <img src="/image/logo-of-Plannerium-horizontal-with-tagline.png" alt="Plannerium Logo" class="footer-logo">
+                <p class="footer-tagline">Powered by AI • Built by Aniruddh Rathod</p>
             </div>
         </div>
     </footer>
