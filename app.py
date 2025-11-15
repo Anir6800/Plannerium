@@ -27,6 +27,11 @@ model = "gemini-2.5-flash"
 os.makedirs('storage', exist_ok=True)
 
 @app.route('/')
+def homepage():
+    """Render the beautiful homepage."""
+    return render_template('homepage.html')
+
+@app.route('/app')
 def index():
     """Render the main application interface."""
     return render_template('index.html')

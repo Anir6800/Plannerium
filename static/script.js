@@ -15,7 +15,7 @@ function initTheme() {
 }
 
 function updateThemeIcon(theme) {
-    themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 }
 
 themeToggle.addEventListener('click', () => {
@@ -61,16 +61,134 @@ tabButtons.forEach(button => {
     });
 });
 
-// Loading overlay
+// Loading overlay with progress tracking
 function showLoading(text = 'Processing...') {
     const overlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
+    const loadingTitle = document.getElementById('loading-title');
+    const progressBar = document.getElementById('overall-progress-bar');
+    const progressPercentage = document.getElementById('progress-percentage');
+    
+    loadingTitle.textContent = 'AI Agents Working...';
     loadingText.textContent = text;
+    progressBar.style.width = '0%';
+    progressPercentage.textContent = '0%';
+    
+    // Initialize agent timeline
+    initializeAgentTimeline();
+    
     overlay.style.display = 'flex';
 }
 
 function hideLoading() {
     document.getElementById('loading-overlay').style.display = 'none';
+}
+
+function initializeAgentTimeline() {
+    const agentTimeline = document.getElementById('agent-timeline');
+    const agents = [
+        { name: '🧠 Decomposition Agent', icon: 'fas fa-brain' },
+        { name: '📊 Prioritization Agent', icon: 'fas fa-chart-line' },
+        { name: '📅 Scheduling Agent', icon: 'fas fa-calendar-alt' },
+        { name: '⚠️ Risk Analysis Agent', icon: 'fas fa-shield-alt' },
+        { name: '🔧 Optimization Agent', icon: 'fas fa-tools' }
+    ];
+    
+    agentTimeline.innerHTML = agents.map((agent, index) => `
+        <div class="agent-item pending" data-agent="${index}">
+            <div class="agent-icon pending">
+                <i class="${agent.icon}"></i>
+            </div>
+            <span class="agent-name">${agent.name}</span>
+            <span class="agent-time" id="time-${index}">--</span>
+        </div>
+    `).join('');
+}
+
+function updateAgentProgress(agentIndex, status, time = null) {
+    const agentItems = document.querySelectorAll('.agent-item');
+    const currentAgentItem = agentItems[agentIndex];
+    const currentAgentIcon = currentAgentItem.querySelector('.agent-icon');
+    
+    // Reset all agents
+    agentItems.forEach(item => {
+        item.classList.remove('active');
+        const icon = item.querySelector('.agent-icon');
+        icon.classList.remove('active');
+    });
+    
+    if (status === 'active') {
+        currentAgentItem.classList.add('active');
+        currentAgentItem.classList.remove('pending');
+        currentAgentIcon.classList.add('active');
+        currentAgentIcon.classList.remove('pending');
+        
+        const agentNames = [
+            '🧠 Decomposition Agent: Breaking down your goal...',
+            '📊 Prioritization Agent: Ranking tasks by importance...',
+            '📅 Scheduling Agent: Creating optimal timeline...',
+            '⚠️ Risk Analysis Agent: Identifying potential risks...',
+            '🔧 Optimization Agent: Fine-tuning your plan...'
+        ];
+        
+        document.getElementById('current-agent').textContent = agentNames[agentIndex];
+    } else if (status === 'completed') {
+        currentAgentItem.classList.remove('active', 'pending');
+        currentAgentItem.classList.add('completed');
+        currentAgentIcon.classList.remove('active', 'pending');
+        currentAgentIcon.classList.add('completed');
+        
+        if (time) {
+            document.getElementById(`time-${agentIndex}`).textContent = `${time}s`;
+        }
+    }
+    
+    // Update overall progress
+    const progress = ((agentIndex + (status === 'completed' ? 1 : 0.5)) / 5) * 100;
+    updateOverallProgress(progress);
+}
+
+function updateOverallProgress(percentage) {
+    const progressBar = document.getElementById('overall-progress-bar');
+    const progressPercentage = document.getElementById('progress-percentage');
+    
+    progressBar.style.width = `${percentage}%`;
+    progressPercentage.textContent = `${Math.round(percentage)}%`;
+}
+
+// Simulate agent progress for better UX
+function simulateAgentProgress() {
+    const agentNames = [
+        '🧠 Decomposition Agent: Breaking down your goal...',
+        '📊 Prioritization Agent: Ranking tasks by importance...',
+        '📅 Scheduling Agent: Creating optimal timeline...',
+        '⚠️ Risk Analysis Agent: Identifying potential risks...',
+        '🔧 Optimization Agent: Fine-tuning your plan...'
+    ];
+    
+    let currentAgent = 0;
+    
+    function processNextAgent() {
+        if (currentAgent < 5) {
+            // Activate current agent
+            updateAgentProgress(currentAgent, 'active');
+            document.getElementById('current-agent').textContent = agentNames[currentAgent];
+            
+            // Simulate processing time
+            setTimeout(() => {
+                // Complete current agent
+                updateAgentProgress(currentAgent, 'completed', Math.floor(Math.random() * 3) + 2);
+                currentAgent++;
+                
+                if (currentAgent < 5) {
+                    setTimeout(processNextAgent, 500);
+                }
+            }, 1500 + Math.random() * 1000);
+        }
+    }
+    
+    // Start the simulation
+    setTimeout(processNextAgent, 500);
 }
 
 // Generate Plan
@@ -91,9 +209,12 @@ generatePlanBtn.addEventListener('click', async () => {
         return;
     }
 
-    showLoading('Generating your comprehensive plan...');
+    showLoading('Initializing AI agents...');
 
     try {
+        // Simulate progress for demo purposes
+        simulateAgentProgress();
+        
         const response = await fetch('/api/plan', {
             method: 'POST',
             headers: {
@@ -114,6 +235,12 @@ generatePlanBtn.addEventListener('click', async () => {
             displayResults(data);
             updateChatContext(data);
             document.getElementById('results-section').style.display = 'block';
+            
+            // Complete all agents
+            for (let i = 0; i < 5; i++) {
+                updateAgentProgress(i, 'completed', Math.floor(Math.random() * 5) + 1);
+            }
+            updateOverallProgress(100);
         } else {
             alert('Error: ' + (data.error || 'Failed to generate plan'));
         }
@@ -121,7 +248,7 @@ generatePlanBtn.addEventListener('click', async () => {
         console.error('Error:', error);
         alert('Failed to generate plan. Please try again.');
     } finally {
-        hideLoading();
+        setTimeout(hideLoading, 1000); // Delay to show completion
     }
 });
 
@@ -533,9 +660,14 @@ exportCsvBtn.addEventListener('click', async () => {
 
 exportPdfBtn.addEventListener('click', async () => {
     if (!currentPlan) {
-        alert('Please generate a plan first');
+        showToast('Please generate a plan first', 'warning');
         return;
     }
+
+    // Show loading state
+    const originalText = exportPdfBtn.innerHTML;
+    exportPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+    exportPdfBtn.disabled = true;
 
     try {
         const response = await fetch('/api/export_pdf', {
@@ -568,14 +700,22 @@ exportPdfBtn.addEventListener('click', async () => {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            
+            showToast('PDF exported successfully!', 'success');
         } else if (response.status === 503) {
-            alert('PDF export is currently unavailable. CSV export is still available.');
+            // Fallback to client-side PDF generation
+            generateClientPDF(currentPlan);
         } else {
-            alert('Error: ' + (data.error || 'Failed to export PDF'));
+            showToast('Error: ' + (data.error || 'Failed to export PDF'), 'error');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to export PDF. Please try again.');
+        // Fallback to client-side PDF generation
+        generateClientPDF(currentPlan);
+    } finally {
+        // Reset button state
+        exportPdfBtn.innerHTML = originalText;
+        exportPdfBtn.disabled = false;
     }
 });
 

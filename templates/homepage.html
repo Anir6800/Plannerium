@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plannerium - AI-Powered Project Planning</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='image/logo-of-Plannerium-badge.png') }}" alt="Plannerium Logo" class="logo-image">
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">Plannerium</span>
+                    <span class="logo-sub">AI Planning</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="#features" class="nav-link scroll-link">Features</a>
+                <a href="#how-it-works" class="nav-link scroll-link">Process</a>
+                <a href="#demo" class="nav-link scroll-link">Demo</a>
+                <a href="/app" class="nav-cta">
+                    <span>Launch App</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="gradient-mesh"></div>
+            <div class="floating-elements">
+                <div class="float-element" data-speed="0.5">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="float-element" data-speed="0.8">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="float-element" data-speed="0.3">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="float-element" data-speed="0.6">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="float-element" data-speed="0.9">
+                    <i class="fas fa-cogs"></i>
+                </div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Transform Your
+                    <span class="gradient-text">Project Planning</span>
+                    with AI Intelligence
+                </h1>
+                <p class="hero-description">
+                    Experience the future of project management with our multi-agent AI system. 
+                    Get intelligent task breakdown, optimized schedules, risk analysis, and real-time 
+                    optimization suggestions - all powered by advanced AI.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/app" class="cta-button primary">
+                        <span>Start Planning Now</span>
+                        <i class="fas fa-rocket"></i>
+                    </a>
+                    <a href="#demo" class="cta-button secondary scroll-link">
+                        <i class="fas fa-play"></i>
+                        <span>Watch Demo</span>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10,000+</span>
+                        <span class="stat-label">Projects Planned</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50,000+</span>
+                        <span class="stat-label">Tasks Optimized</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99%</span>
+                        <span class="stat-label">Success Rate</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="app-preview">
+                    <div class="preview-header">
+                        <div class="preview-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="preview-title">AI Planning Dashboard</div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-task">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Task Analysis Complete</span>
+                        </div>
+                        <div class="preview-task">
+                            <i class="fas fa-clock"></i>
+                            <span>Schedule Optimized</span>
+                        </div>
+                        <div class="preview-task">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Risks Identified</span>
+                        </div>
+                        <div class="preview-chart">
+                            <div class="chart-bar" style="height: 60%"></div>
+                            <div class="chart-bar" style="height: 80%"></div>
+                            <div class="chart-bar" style="height: 45%"></div>
+                            <div class="chart-bar" style="height: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    Powerful AI Features for
+                    <span class="gradient-text">Intelligent Planning</span>
+                </h2>
+                <p class="section-description">
+                    Our advanced multi-agent AI system provides comprehensive project planning 
+                    capabilities that adapt to your unique needs.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Multi-Agent AI System</h3>
+                    <p>Collaborative AI agents work together to analyze, plan, and optimize your projects with unprecedented intelligence.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Task Analysis</span>
+                        <span class="tag">Schedule Optimization</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>Intelligent Task Breakdown</h3>
+                    <p>Automatically break down complex projects into manageable tasks with detailed descriptions and dependencies.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Auto Decomposition</span>
+                        <span class="tag">Dependency Mapping</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Smart Schedule Generation</h3>
+                    <p>Create optimized weekly schedules that balance workload, deadlines, and resource availability.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Workload Balancing</span>
+                        <span class="tag">Deadline Management</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Proactive Risk Analysis</h3>
+                    <p>Identify potential risks early and get actionable mitigation strategies before they impact your project.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Risk Detection</span>
+                        <span class="tag">Mitigation Plans</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Real-time Optimization</h3>
+                    <p>Continuous analysis and suggestions to improve your project plan as conditions change.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Performance Insights</span>
+                        <span class="tag">Plan Refinement</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Chat Assistant</h3>
+                    <p>Get instant help, clarifications, and project insights from our intelligent AI assistant.</p>
+                    <div class="feature-tags">
+                        <span class="tag">24/7 Support</span>
+                        <span class="tag">Instant Insights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    Your Journey to
+                    <span class="gradient-text">Perfect Planning</span>
+                </h2>
+                <p class="section-description">
+                    Follow our simple 4-step process to transform your project ideas 
+                    into actionable, optimized plans.
+                </p>
+            </div>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Define Your Project</h3>
+                        <p>Describe your project goal, timeline, and constraints. Our AI will understand your vision and requirements.</p>
+                        <div class="step-features">
+                            <span class="step-feature">Goal Setting</span>
+                            <span class="step-feature">Timeline Definition</span>
+                            <span class="step-feature">Constraint Input</span>
+                        </div>
+                    </div>
+                    <div class="step-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                </div>
+                <div class="process-step reverse">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>AI Analysis & Planning</h3>
+                        <p>Our multi-agent system analyzes your requirements and creates comprehensive project plans with intelligent task breakdown.</p>
+                        <div class="step-features">
+                            <span class="step-feature">Multi-Agent Analysis</span>
+                            <span class="step-feature">Task Decomposition</span>
+                            <span class="step-feature">Dependency Mapping</span>
+                        </div>
+                    </div>
+                    <div class="step-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Review & Customize</h3>
+                        <p>Review the generated plan, make adjustments, and customize tasks to perfectly match your needs and preferences.</p>
+                        <div class="step-features">
+                            <span class="step-feature">Interactive Review</span>
+                            <span class="step-feature">Easy Customization</span>
+                            <span class="step-feature">Real-time Updates</span>
+                        </div>
+                    </div>
+                    <div class="step-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                </div>
+                <div class="process-step reverse">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3>Execute & Optimize</h3>
+                        <p>Start executing your plan with real-time tracking, progress monitoring, and continuous optimization suggestions.</p>
+                        <div class="step-features">
+                            <span class="step-feature">Progress Tracking</span>
+                            <span class="step-feature">Performance Monitoring</span>
+                            <span class="step-feature">Continuous Optimization</span>
+                        </div>
+                    </div>
+                    <div class="step-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    See the Magic in
+                    <span class="gradient-text">Action</span>
+                </h2>
+                <p class="section-description">
+                    Experience how our AI transforms simple project ideas 
+                    into comprehensive, optimized plans in seconds.
+                </p>
+            </div>
+            <div class="demo-container">
+                <div class="demo-input">
+                    <h3>Try It Yourself</h3>
+                    <p>Enter a project idea and watch our AI create a complete plan:</p>
+                    <div class="demo-form">
+                        <textarea placeholder="e.g., Build a mobile app for task management with team collaboration features, deadline in 3 months, 15 hours per week available..."></textarea>
+                        <button class="demo-button">
+                            <i class="fas fa-magic"></i>
+                            Generate Plan
+                        </button>
+                    </div>
+                </div>
+                <div class="demo-output">
+                    <div class="demo-preview">
+                        <div class="preview-item">
+                            <i class="fas fa-tasks"></i>
+                            <span>Task breakdown will appear here...</span>
+                        </div>
+                        <div class="preview-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Schedule optimization...</span>
+                        </div>
+                        <div class="preview-item">
+                            <i class="fas fa-shield"></i>
+                            <span>Risk analysis...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Project Planning?</h2>
+                <p>Join thousands of users who have revolutionized their project management with AI-powered planning.</p>
+                <div class="cta-buttons">
+                    <a href="/app" class="cta-button primary large">
+                        <span>Start Planning Free</span>
+                        <i class="fas fa-rocket"></i>
+                    </a>
+                    <a href="#" class="cta-button secondary">
+                        <i class="fas fa-download"></i>
+                        <span>Download Whitepaper</span>
+                    </a>
+                </div>
+                <div class="cta-features">
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Free to get started</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Cancel anytime</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-container">
+                        <img src="{{ url_for('static', filename='image/logo-of-Plannerium-horizontal-with-tagline.png') }}" alt="Plannerium Logo" class="footer-logo-image">
+                    </div>
+                    <p>Intelligent multi-agent planning system powered by advanced AI technology.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="#features" class="footer-link scroll-link">Features</a>
+                        <a href="#" class="footer-link">Pricing</a>
+                        <a href="#" class="footer-link">API</a>
+                        <a href="#" class="footer-link">Integrations</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="#" class="footer-link">Documentation</a>
+                        <a href="#" class="footer-link">Tutorials</a>
+                        <a href="#" class="footer-link">Blog</a>
+                        <a href="#" class="footer-link">Support</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="#" class="footer-link">About</a>
+                        <a href="#" class="footer-link">Careers</a>
+                        <a href="#" class="footer-link">Contact</a>
+                        <a href="#" class="footer-link">Privacy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Plannerium. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='homepage.js') }}"></script>
+</body>
+</html>
