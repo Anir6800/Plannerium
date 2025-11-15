@@ -1,0 +1,1388 @@
+{
+  "deadline": "2027-01-01",
+  "generated_at": "2025-11-15T09:02:53.969982",
+  "goal": "gate - 2027 - da",
+  "hours_per_week": 20,
+  "optimizations": [
+    {
+      "category": "Timeline Adjustment",
+      "description": "The current schedule critically violates dependencies for T08, T09, and T10, starting them before prerequisites (T04, T05, T06, T07) are complete. Moreover, these crucial tasks conclude very close to the likely GATE exam date in Feb 2027 (Risk 1, Risk 5). Re-sequence and shift the entire 'Intensive Practice & Exam Readiness' milestone to begin significantly earlier. Ensure all core subject dependencies (T04, T05, T06, T07) are met well in advance. Aim to complete T10 by mid-January 2027 at the latest, providing a comfortable 2-3 week buffer for last-minute review.",
+      "impact": "Eliminates critical path violations, provides essential buffer time for last-minute review or unforeseen delays, significantly increases exam readiness.",
+      "priority": "High",
+      "title": "Realign Final Revision and Practice Phase (T08, T09, T10)"
+    },
+    {
+      "category": "Task Reordering",
+      "description": "T02 ('Mathematics Foundations for DA', 180 hrs) is a core prerequisite for T04 ('Machine Learning & AI Core Concepts') but starts very late in Week 18. This creates a bottleneck and an imbalanced initial foundational workload. Shift T02 to begin much earlier, ideally in parallel with or immediately following the completion of T01, alongside T03 ('Programming & Data Structures Basics').",
+      "impact": "Strengthens foundational understanding earlier, avoids bottlenecks for subsequent advanced topics, creates a more balanced and efficient initial study phase.",
+      "priority": "High",
+      "title": "Front-load Mathematics Foundations (T02)"
+    },
+    {
+      "category": "Task Reordering",
+      "description": "T05 ('Database Management & Big Data Concepts') is currently stretched over 30 weeks in small 5-hour increments, and T07 ('Computer Networks & Operating Systems Fundamentals') is pushed extremely late to weeks 50-57. Both only depend on T01. Consolidate and move these tasks to much earlier dedicated blocks in the schedule, running in parallel with other foundational subjects (e.g., T02, T03) or immediately after T01. This frees up later, critical weeks.",
+      "impact": "Completes auxiliary subjects earlier, reduces the tail-end workload, and creates more capacity for focused core subject study and revision.",
+      "priority": "High",
+      "title": "Consolidate and Integrate Auxiliary Subjects (T05, T07) Earlier"
+    },
+    {
+      "category": "Resource Optimization",
+      "description": "The demanding 20-hour/week commitment over 59 continuous weeks poses a high risk of burnout (Risk 3) and leaves no room for unforeseen disruptions (Risk 6). Integrate planned lighter study weeks (e.g., 5-10 hours) or complete breaks (e.g., 1 week off) every 8-12 weeks. Additionally, allocate 2-3 dedicated 'buffer weeks' at key transition points (e.g., between milestones) to absorb minor delays or revisit difficult topics.",
+      "impact": "Significantly mitigates burnout risk, improves long-term motivation and sustainability, provides flexibility to handle unexpected events, and supports better learning retention.",
+      "priority": "High",
+      "title": "Incorporate Structured Breaks and Buffer Weeks"
+    },
+    {
+      "category": "Scope Reduction",
+      "description": "Re-evaluate the depth required for 'Big Data Concepts' within T05 and 'Computer Networks & Operating Systems Fundamentals' within T07. Based on the detailed syllabus analysis from T01, explicitly define and potentially limit the scope for 'high-level understanding' for T07 and focus only on the most critical, high-weightage aspects of NoSQL/Big Data for T05. If certain sub-topics are marginal to the GATE DA syllabus, de-emphasize them to save hours, or earmark them for optional study if time permits.",
+      "impact": "Reclaims valuable study hours that can be reallocated to higher-weightage core subjects (T02, T03, T04) or dedicated practice, ensuring more efficient preparation.",
+      "priority": "Medium",
+      "title": "Streamline Depth for T05 and T07 Based on Syllabus Weightage"
+    },
+    {
+      "category": "Resource Optimization",
+      "description": "To proactively counter Risk 4 (inadequate depth), integrate short, mandatory self-assessment checkpoints (e.g., 1-2 hours per week/bi-week, taken from the currently allocated 20 hours) after completing key sub-topics within T02-T07. This could involve solving challenging conceptual problems, explaining topics aloud, using mini-quizzes, or revisiting solved problems, rather than waiting for T09/T10 for comprehensive assessment.",
+      "impact": "Ensures genuine understanding and mastery of concepts, identifies learning gaps early, prevents the accumulation of misunderstood topics, and reinforces active learning.",
+      "priority": "Medium",
+      "title": "Embed Regular, Small-Scale Self-Assessment Checkpoints"
+    },
+    {
+      "category": "Resource Optimization",
+      "description": "Avoid rigid adherence to '15 hours for Task A, 5 hours for Task B' for many consecutive weeks. Instead, conduct a weekly or bi-weekly review of actual progress against the plan. If a sub-topic or task is completed faster than estimated, reallocate the remaining hours to other active tasks, buffer, or early PYQ exposure. If a topic requires more time, prioritize it and adjust the subsequent week's plan, drawing from allocated buffer time or by slightly shifting lower-priority tasks.",
+      "impact": "Improves adaptability to learning pace and individual subject difficulty, ensures efficient use of study hours, and mitigates the impact of effort underestimation (Risk 2).",
+      "priority": "Medium",
+      "title": "Implement Flexible Weekly Planning and Dynamic Hour Allocation"
+    },
+    {
+      "category": "Task Reordering",
+      "description": "While T09 is dedicated to full PYQ practice, incorporate small, regular sessions (e.g., 2-3 hours bi-weekly) of solving relevant previous year questions (from GATE DA, CS, EC, IN) for specific topics as they are completed (e.g., Math PYQs after a major math module). This should be a supplementary activity taken from the allocated 20 weekly hours and complements core study, not replaces T09.",
+      "impact": "Provides early familiarity with exam patterns and question types, reinforces learned concepts with application, helps prioritize study areas based on exam relevance, and maintains motivation by showing tangible progress in an exam context.",
+      "priority": "Medium",
+      "title": "Introduce Targeted Early Previous Year Questions (PYQ) Exposure"
+    }
+  ],
+  "risks": [
+    {
+      "description": "Critical dependency violations in the final stages of the schedule (T08, T09, T10) where revision and practice tasks are scheduled to start before all prerequisite core subjects are completed. This will lead to rushed, incomplete preparation for the most critical phase.",
+      "id": "risk_1",
+      "impact": "High",
+      "mitigation": "Immediately re-evaluate and adjust the entire study schedule. Shift core subject completion dates earlier or extend the overall project duration. Ensure significant buffer time between the completion of all core subjects (T04, T05, T06, T07) and the start of integrated revision (T08). Similarly, enforce strict completion of T08 before T09, and T09 before T10.",
+      "probability": "High",
+      "severity": "High"
+    },
+    {
+      "description": "Underestimation of the time and effort required for deep mastery of foundational subjects (e.g., T02 Mathematics, T03 Programming & DS, T04 ML/AI Core Concepts), leading to schedule slippage across multiple tasks and milestones.",
+      "id": "risk_2",
+      "impact": "High",
+      "mitigation": "Implement regular progress reviews and flexible scheduling. Break down large tasks into smaller sub-tasks with more granular estimations. Incorporate periodic buffer weeks (e.g., 1-2 weeks every 2-3 months) to absorb unexpected delays. Be prepared to re-allocate hours or extend the preparation period if initial estimates prove too optimistic.",
+      "probability": "Medium",
+      "severity": "High"
+    },
+    {
+      "description": "Burnout and loss of motivation due to the sustained high weekly study commitment (20 hours/week) over an extended period (over a year), potentially leading to significant drops in productivity or abandonment of the project.",
+      "id": "risk_3",
+      "impact": "High",
+      "mitigation": "Integrate planned breaks (e.g., lighter weeks, short holidays) into the schedule. Monitor personal well-being and adjust weekly hours if signs of burnout appear. Diversify study methods to keep engagement high. Set and celebrate small, interim milestones to maintain motivation. Consider joining a study group for peer support and accountability.",
+      "probability": "High",
+      "severity": "High"
+    },
+    {
+      "description": "Inadequate depth of understanding or practical application for core subjects despite allocated hours, which might only become apparent during later revision or mock test phases (e.g., deliverables like 'demonstrated mastery' are subjective).",
+      "id": "risk_4",
+      "impact": "High",
+      "mitigation": "Proactively incorporate objective assessment methods throughout the study process, such as topic-wise quizzes, solving varied problem sets, and explaining concepts to others. Don't just rely on completing notes. Utilize multiple resources (textbooks, online courses, practice problems) to ensure a comprehensive grasp. Seek constructive feedback on solved problems.",
+      "probability": "Medium",
+      "severity": "High"
+    },
+    {
+      "description": "Insufficient buffer time allocated for the final intensive practice phase (T08 Revision, T09 PYQs, T10 Mocks), leading right up to the typical GATE exam dates (February 2027) with no room for unforeseen delays or additional practice.",
+      "id": "risk_5",
+      "impact": "High",
+      "mitigation": "Shift the entire schedule forward by at least 4-6 weeks to create a comfortable buffer before the anticipated exam date. Prioritize completing core subjects earlier, even if it means slightly compressing some less impactful initial tasks. Ensure the final month is dedicated purely to high-intensity revision and mock tests.",
+      "probability": "High",
+      "severity": "High"
+    },
+    {
+      "description": "External disturbances or personal commitments (e.g., health issues, family emergencies, academic/work pressure) disrupting the consistent weekly study schedule, leading to missed study hours and accumulated backlog.",
+      "id": "risk_6",
+      "impact": "Medium",
+      "mitigation": "Build additional 'flex hours' or buffer weeks into the schedule specifically for absorbing unforeseen disruptions. Prioritize health and well-being to minimize severe disruptions. Develop a contingency plan for catching up if a significant amount of study time is lost, such as identifying lower-priority tasks that could be streamlined.",
+      "probability": "High",
+      "severity": "High"
+    },
+    {
+      "description": "Lack of sufficient or high-quality Previous Year Questions (PYQs) and specific topic tests for the GATE DA paper, which is a relatively new examination, making targeted practice and trend analysis challenging.",
+      "id": "risk_7",
+      "impact": "Medium",
+      "mitigation": "Actively research and identify relevant PYQs from other GATE branches (CS, EC, IN) that cover common aptitude and technical topics. Focus on understanding core concepts thoroughly rather than just pattern recognition. Supplement with high-quality practice questions from standard textbooks and online competitive programming platforms.",
+      "probability": "Medium",
+      "severity": "Medium"
+    }
+  ],
+  "schedule": [
+    {
+      "hours_planned": 15,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t01",
+          "task_title": "Understand GATE DA Syllabus & Plan"
+        }
+      ],
+      "week_number": 1,
+      "week_start": "2025-11-15"
+    },
+    {
+      "hours_planned": 5,
+      "tasks": [
+        {
+          "hours_assigned": 5,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t01",
+          "task_title": "Understand GATE DA Syllabus & Plan"
+        }
+      ],
+      "week_number": 2,
+      "week_start": "2025-11-22"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 3,
+      "week_start": "2025-11-29"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 4,
+      "week_start": "2025-12-06"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 5,
+      "week_start": "2025-12-13"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 6,
+      "week_start": "2025-12-20"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 7,
+      "week_start": "2025-12-27"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 8,
+      "week_start": "2026-01-03"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 9,
+      "week_start": "2026-01-10"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 10,
+      "week_start": "2026-01-17"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 11,
+      "week_start": "2026-01-24"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 12,
+      "week_start": "2026-01-31"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 13,
+      "week_start": "2026-02-07"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 14,
+      "week_start": "2026-02-14"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 15,
+      "week_start": "2026-02-21"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 16,
+      "week_start": "2026-02-28"
+    },
+    {
+      "hours_planned": 10,
+      "tasks": [
+        {
+          "hours_assigned": 10,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t03",
+          "task_title": "Programming & Data Structures Basics"
+        }
+      ],
+      "week_number": 17,
+      "week_start": "2026-03-07"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 18,
+      "week_start": "2026-03-14"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 19,
+      "week_start": "2026-03-21"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 20,
+      "week_start": "2026-03-28"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 21,
+      "week_start": "2026-04-04"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 22,
+      "week_start": "2026-04-11"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 23,
+      "week_start": "2026-04-18"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 24,
+      "week_start": "2026-04-25"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 25,
+      "week_start": "2026-05-02"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 26,
+      "week_start": "2026-05-09"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 27,
+      "week_start": "2026-05-16"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 28,
+      "week_start": "2026-05-23"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 29,
+      "week_start": "2026-05-30"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 30,
+      "week_start": "2026-06-06"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 31,
+      "week_start": "2026-06-13"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t05",
+          "task_title": "Database Management & Big Data Concepts"
+        }
+      ],
+      "week_number": 32,
+      "week_start": "2026-06-20"
+    },
+    {
+      "hours_planned": 5,
+      "tasks": [
+        {
+          "hours_assigned": 5,
+          "milestone": "Setup & Foundation Building",
+          "task_id": "gate_da_t02",
+          "task_title": "Mathematics Foundations for DA"
+        }
+      ],
+      "week_number": 33,
+      "week_start": "2026-06-27"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 34,
+      "week_start": "2026-07-04"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 35,
+      "week_start": "2026-07-11"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 36,
+      "week_start": "2026-07-18"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 37,
+      "week_start": "2026-07-25"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 38,
+      "week_start": "2026-08-01"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 39,
+      "week_start": "2026-08-08"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 40,
+      "week_start": "2026-08-15"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 41,
+      "week_start": "2026-08-22"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 42,
+      "week_start": "2026-08-29"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 43,
+      "week_start": "2026-09-05"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 44,
+      "week_start": "2026-09-12"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 45,
+      "week_start": "2026-09-19"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 46,
+      "week_start": "2026-09-26"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 47,
+      "week_start": "2026-10-03"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 48,
+      "week_start": "2026-10-10"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 49,
+      "week_start": "2026-10-17"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t04",
+          "task_title": "Machine Learning & AI Core Concepts"
+        },
+        {
+          "hours_assigned": 10,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t07",
+          "task_title": "Computer Networks & Operating Systems Fundamentals"
+        }
+      ],
+      "week_number": 50,
+      "week_start": "2026-10-24"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t07",
+          "task_title": "Computer Networks & Operating Systems Fundamentals"
+        }
+      ],
+      "week_number": 51,
+      "week_start": "2026-10-31"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t07",
+          "task_title": "Computer Networks & Operating Systems Fundamentals"
+        }
+      ],
+      "week_number": 52,
+      "week_start": "2026-11-07"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t07",
+          "task_title": "Computer Networks & Operating Systems Fundamentals"
+        }
+      ],
+      "week_number": 53,
+      "week_start": "2026-11-14"
+    },
+    {
+      "hours_planned": 15,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t06",
+          "task_title": "Advanced Algorithms & Complexity Analysis"
+        }
+      ],
+      "week_number": 54,
+      "week_start": "2026-11-21"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Intensive Practice & Exam Readiness",
+          "task_id": "gate_da_t08",
+          "task_title": "Integrated Revision & Short Notes Creation"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t07",
+          "task_title": "Computer Networks & Operating Systems Fundamentals"
+        }
+      ],
+      "week_number": 55,
+      "week_start": "2026-11-28"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Intensive Practice & Exam Readiness",
+          "task_id": "gate_da_t08",
+          "task_title": "Integrated Revision & Short Notes Creation"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t07",
+          "task_title": "Computer Networks & Operating Systems Fundamentals"
+        }
+      ],
+      "week_number": 56,
+      "week_start": "2026-12-05"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Intensive Practice & Exam Readiness",
+          "task_id": "gate_da_t08",
+          "task_title": "Integrated Revision & Short Notes Creation"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Core Subject Mastery",
+          "task_id": "gate_da_t07",
+          "task_title": "Computer Networks & Operating Systems Fundamentals"
+        }
+      ],
+      "week_number": 57,
+      "week_start": "2026-12-12"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Intensive Practice & Exam Readiness",
+          "task_id": "gate_da_t08",
+          "task_title": "Integrated Revision & Short Notes Creation"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Intensive Practice & Exam Readiness",
+          "task_id": "gate_da_t09",
+          "task_title": "Previous Year Questions (PYQ) & Topic Tests"
+        }
+      ],
+      "week_number": 58,
+      "week_start": "2026-12-19"
+    },
+    {
+      "hours_planned": 20,
+      "tasks": [
+        {
+          "hours_assigned": 15,
+          "milestone": "Intensive Practice & Exam Readiness",
+          "task_id": "gate_da_t09",
+          "task_title": "Previous Year Questions (PYQ) & Topic Tests"
+        },
+        {
+          "hours_assigned": 5,
+          "milestone": "Intensive Practice & Exam Readiness",
+          "task_id": "gate_da_t10",
+          "task_title": "Full-Length Mock Tests & Analysis"
+        }
+      ],
+      "week_number": 59,
+      "week_start": "2026-12-26"
+    }
+  ],
+  "start_date": "2025-11-15",
+  "tasks": [
+    {
+      "deliverable": "Detailed GATE DA syllabus breakdown, curated list of key topics, initial exam strategy, and a comprehensive weekly study timetable.",
+      "dependencies": [],
+      "description": "Thoroughly research and understand the official GATE DA 2027 syllabus, exam pattern, marking scheme, previous year question trends, and expected cut-offs. Based on this, create a comprehensive, week-by-week study plan for the entire preparation period.",
+      "effort_score": 2,
+      "estimated_hours": 20,
+      "id": "gate_da_t01",
+      "impact_score": 10,
+      "milestone": "Setup & Foundation Building",
+      "priority_label": "High",
+      "priority_score": 28,
+      "title": "Understand GATE DA Syllabus & Plan",
+      "urgency_score": 10
+    },
+    {
+      "deliverable": "Comprehensive notes for all mathematical topics, completed exercises, and demonstrated mastery through solved practice problems.",
+      "dependencies": [
+        "gate_da_t01"
+      ],
+      "description": "Deeply study and master the foundational mathematics essential for Data Science and AI, including Linear Algebra (matrices, vectors, eigenvalues), Calculus (limits, differentiation, integration), Probability & Statistics (distributions, hypothesis testing), and Discrete Mathematics (logic, set theory, combinatorics) relevant to the GATE DA syllabus. Includes solving concept-based problems.",
+      "effort_score": 9,
+      "estimated_hours": 180,
+      "id": "gate_da_t02",
+      "impact_score": 9,
+      "milestone": "Setup & Foundation Building",
+      "priority_label": "Medium",
+      "priority_score": 18,
+      "title": "Mathematics Foundations for DA",
+      "urgency_score": 8
+    },
+    {
+      "deliverable": "Functional code implementations for common DS/Algo, solved problems from competitive programming platforms, and strong understanding of time/space complexity.",
+      "dependencies": [
+        "gate_da_t01"
+      ],
+      "description": "Strengthen core programming skills (preferably Python or C++) focusing on syntax, control structures, and object-oriented concepts. Master fundamental Data Structures (arrays, linked lists, stacks, queues, trees, graphs) and basic algorithmic paradigms (searching, sorting). Includes coding practice on problem-solving platforms.",
+      "effort_score": 8,
+      "estimated_hours": 150,
+      "id": "gate_da_t03",
+      "impact_score": 9,
+      "milestone": "Setup & Foundation Building",
+      "priority_label": "Medium",
+      "priority_score": 19,
+      "title": "Programming & Data Structures Basics",
+      "urgency_score": 8
+    },
+    {
+      "deliverable": "Detailed notes on ML/AI algorithms and concepts, ability to explain algorithm mechanics, and solved conceptual/numerical problems related to their application.",
+      "dependencies": [
+        "gate_da_t02",
+        "gate_da_t03"
+      ],
+      "description": "In-depth study of core Machine Learning algorithms (Supervised: Regression, Classification; Unsupervised: Clustering, Dimensionality Reduction), Neural Networks fundamentals, basics of Deep Learning architectures, and core Artificial Intelligence principles (search algorithms, knowledge representation). Includes theoretical understanding and practical problem-solving.",
+      "effort_score": 10,
+      "estimated_hours": 200,
+      "id": "gate_da_t04",
+      "impact_score": 10,
+      "milestone": "Core Subject Mastery",
+      "priority_label": "Medium",
+      "priority_score": 17,
+      "title": "Machine Learning & AI Core Concepts",
+      "urgency_score": 7
+    },
+    {
+      "deliverable": "Proficiency in SQL query writing, understanding of database design principles, and comprehensive notes on RDBMS and Big Data concepts.",
+      "dependencies": [
+        "gate_da_t01"
+      ],
+      "description": "Study Relational Database Management Systems (RDBMS) covering SQL queries, ER models, normalization, transaction management, and concurrency control. Gain an introduction to NoSQL databases and fundamental concepts of Big Data (e.g., distributed storage, processing frameworks). Includes practical SQL exercises.",
+      "effort_score": 5,
+      "estimated_hours": 90,
+      "id": "gate_da_t05",
+      "impact_score": 8,
+      "milestone": "Core Subject Mastery",
+      "priority_label": "Medium",
+      "priority_score": 19,
+      "title": "Database Management & Big Data Concepts",
+      "urgency_score": 6
+    },
+    {
+      "deliverable": "Detailed analysis of advanced algorithms, ability to solve complex algorithmic problems, and strong understanding of complexity theory.",
+      "dependencies": [
+        "gate_da_t03"
+      ],
+      "description": "Dive deeper into advanced algorithm design techniques such as Dynamic Programming, Greedy Algorithms, Backtracking, and Branch & Bound. Cover advanced graph algorithms (e.g., shortest path, minimum spanning tree) and master rigorous time and space complexity analysis for various algorithms. Includes solving challenging algorithmic problems.",
+      "effort_score": 6,
+      "estimated_hours": 120,
+      "id": "gate_da_t06",
+      "impact_score": 8,
+      "milestone": "Core Subject Mastery",
+      "priority_label": "Medium",
+      "priority_score": 18,
+      "title": "Advanced Algorithms & Complexity Analysis",
+      "urgency_score": 6
+    },
+    {
+      "deliverable": "Concise notes on core CN/OS concepts, ability to answer fundamental questions related to these topics.",
+      "dependencies": [
+        "gate_da_t01"
+      ],
+      "description": "Review fundamental concepts of Computer Networks (OSI/TCP-IP models, network devices, routing protocols) and Operating Systems (processes, threads, CPU scheduling, memory management, file systems) as per their relevance and potential overlap with the GATE DA syllabus. Focus on high-level understanding and key concepts.",
+      "effort_score": 4,
+      "estimated_hours": 60,
+      "id": "gate_da_t07",
+      "impact_score": 7,
+      "milestone": "Core Subject Mastery",
+      "priority_label": "Medium",
+      "priority_score": 18,
+      "title": "Computer Networks & Operating Systems Fundamentals",
+      "urgency_score": 5
+    },
+    {
+      "deliverable": "Complete set of self-prepared, concise revision notes and formula sheets for all GATE DA subjects.",
+      "dependencies": [
+        "gate_da_t04",
+        "gate_da_t05",
+        "gate_da_t06",
+        "gate_da_t07"
+      ],
+      "description": "Conduct a systematic and comprehensive revision of all covered subjects. Create consolidated short notes, formula sheets, and mind maps for quick review of important concepts, theorems, and algorithms across all subjects.",
+      "effort_score": 5,
+      "estimated_hours": 80,
+      "id": "gate_da_t08",
+      "impact_score": 9,
+      "milestone": "Intensive Practice & Exam Readiness",
+      "priority_label": "High",
+      "priority_score": 22,
+      "title": "Integrated Revision & Short Notes Creation",
+      "urgency_score": 8
+    },
+    {
+      "deliverable": "Solved PYQ sets with performance analysis, identified list of weak topics, and targeted practice plans for those areas.",
+      "dependencies": [
+        "gate_da_t08"
+      ],
+      "description": "Solve all available GATE DA previous year question papers. If the number of DA papers is limited, supplement with relevant PYQs from GATE CS/EC/IN for common aptitude and technical topics. Additionally, take numerous topic-wise tests to pinpoint any remaining weak areas in specific subjects or concepts.",
+      "effort_score": 5,
+      "estimated_hours": 90,
+      "id": "gate_da_t09",
+      "impact_score": 9,
+      "milestone": "Intensive Practice & Exam Readiness",
+      "priority_label": "High",
+      "priority_score": 23,
+      "title": "Previous Year Questions (PYQ) & Topic Tests",
+      "urgency_score": 9
+    },
+    {
+      "deliverable": "Detailed mock test performance reports, refined exam-taking strategy, and significant improvement in score and accuracy across mock tests.",
+      "dependencies": [
+        "gate_da_t09"
+      ],
+      "description": "Take 6-8 full-length mock tests under strict exam conditions (timed, simulated environment). After each mock, conduct a rigorous performance analysis to identify recurring mistakes, improve time management, refine question selection strategy, and assess overall readiness. This includes reviewing correct and incorrect answers.",
+      "effort_score": 5,
+      "estimated_hours": 80,
+      "id": "gate_da_t10",
+      "impact_score": 10,
+      "milestone": "Intensive Practice & Exam Readiness",
+      "priority_label": "High",
+      "priority_score": 25,
+      "title": "Full-Length Mock Tests & Analysis",
+      "urgency_score": 10
+    }
+  ],
+  "saved_at": "2025-11-15T09:03:31.407983",
+  "project_name": "aniruddh-da"
+}

@@ -5,8 +5,22 @@ import io
 from datetime import datetime
 from typing import Dict, List, Any
 import pandas as pd
-from weasyprint import HTML, CSS
-from weasyprint.text.fonts import FontConfiguration
+
+# WeasyPrint availability flag
+WEASYPRINT_AVAILABLE = False
+
+def check_weasyprint_available():
+    """Check if WeasyPrint is available and set the flag."""
+    global WEASYPRINT_AVAILABLE
+    try:
+        from weasyprint import HTML, CSS
+        from weasyprint.text.fonts import FontConfiguration
+        WEASYPRINT_AVAILABLE = True
+        return True
+    except ImportError:
+        WEASYPRINT_AVAILABLE = False
+        print("Warning: WeasyPrint not available. PDF export will be disabled.")
+        return False
 
 def save_project_to_file(project_name: str, project_data: Dict[str, Any]) -> bool:
     """Save project data to a JSON file."""
@@ -70,6 +84,15 @@ def generate_csv(project_data: Dict[str, Any]) -> str:
 def generate_pdf(project_data: Dict[str, Any]) -> bytes:
     """Generate PDF content from project data."""
     try:
+        # Check if WeasyPrint is available
+        if not check_weasyprint_available():
+            print("PDF generation disabled - WeasyPrint not available")
+            return b""
+        
+        # Import WeasyPrint only when needed
+        from weasyprint import HTML, CSS
+        from weasyprint.text.fonts import FontConfiguration
+        
         # Create HTML content for PDF
         html_content = create_pdf_html(project_data)
         

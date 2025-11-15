@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 from utils import save_project_to_file, load_project_from_file, generate_csv, generate_pdf
 from agents import run_planning_pipeline
@@ -19,8 +19,9 @@ gemini_api_key = os.getenv('GEMINI_API_KEY')
 if not gemini_api_key:
     raise ValueError("GEMINI_API_KEY environment variable is required")
 
-genai.configure(api_key=gemini_api_key)
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Initialize the new Google GenAI client
+client = genai.Client(api_key=gemini_api_key)
+model = "gemini-2.5-flash"
 
 # Ensure storage directory exists
 os.makedirs('storage', exist_ok=True)
@@ -48,8 +49,15 @@ def generate_plan():
             start_date=data['start_date'],
             deadline=data['deadline'],
             hours_per_week=data['hours_per_week'],
-            model=model
+            model=model,
+            client=client
         )
+        
+        # Log performance metrics
+        if 'performance_metrics' in plan_result:
+            metrics = plan_result['performance_metrics']
+            app.logger.info(f"Planning completed in {metrics['total_time']}s")
+            app.logger.info(f"Agent times: {metrics['agent_times']}")
         
         return jsonify(plan_result)
     
@@ -152,6 +160,9 @@ def export_pdf():
         project_data = data['project_data']
         pdf_content = generate_pdf(project_data)
         
+        if not pdf_content:
+            return jsonify({'error': 'PDF generation not available. Please install WeasyPrint dependencies.'}), 503
+        
         return jsonify({
             'pdf_content': pdf_content.decode('latin1'),  # Encode for JSON transmission
             'filename': f"{project_data.get('project_name', 'project')}_plan.pdf"
@@ -182,7 +193,7 @@ User Question: {message}
 
 Please provide a helpful, concise response focused on project planning, task management, and productivity."""
         
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(model=model, contents=prompt)
         
         return jsonify({
             'response': response.text,

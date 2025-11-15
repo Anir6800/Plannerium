@@ -1,5 +1,5 @@
 import json
-import google.generativeai as genai
+import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Any
 
@@ -23,7 +23,7 @@ def validate_json_response(response_text: str) -> Dict[str, Any]:
     except json.JSONDecodeError as e:
         raise ValueError(f"Invalid JSON response: {e}")
 
-def decomposition_agent(goal: str, start_date: str, deadline: str, hours_per_week: int, model) -> Dict[str, Any]:
+def decomposition_agent(goal: str, start_date: str, deadline: str, hours_per_week: int, model: str, client) -> Dict[str, Any]:
     """
     Agent 1: Break down the goal into milestones, tasks, estimated hours, and dependencies.
     """
@@ -64,10 +64,10 @@ Requirements:
 - Group tasks into logical milestones
 - Ensure tasks can be completed by one person working {hours_per_week} hours per week"""
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(model=model, contents=prompt)
     return validate_json_response(response.text)
 
-def prioritization_agent(tasks: List[Dict[str, Any]], model) -> List[Dict[str, Any]]:
+def prioritization_agent(tasks: List[Dict[str, Any]], model: str, client) -> List[Dict[str, Any]]:
     """
     Agent 2: Score each task based on impact, urgency, and effort. Assign priority labels.
     """
@@ -111,11 +111,11 @@ Priority Labels:
 
 Keep all original task fields and add the new priority fields."""
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(model=model, contents=prompt)
     result = validate_json_response(response.text)
     return result.get('tasks', [])
 
-def scheduling_agent(tasks: List[Dict[str, Any]], start_date: str, deadline: str, hours_per_week: int, model) -> List[Dict[str, Any]]:
+def scheduling_agent(tasks: List[Dict[str, Any]], start_date: str, deadline: str, hours_per_week: int, model: str, client) -> List[Dict[str, Any]]:
     """
     Agent 3: Create week-by-week schedule respecting available hours and dependencies.
     """
@@ -161,11 +161,11 @@ Schedule Requirements:
 - Respect task dependencies (don't schedule dependent tasks before prerequisites)
 - Include week numbers and dates"""
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(model=model, contents=prompt)
     result = validate_json_response(response.text)
     return result.get('schedule', [])
 
-def risk_analysis_agent(tasks: List[Dict[str, Any]], schedule: List[Dict[str, Any]], model) -> List[Dict[str, Any]]:
+def risk_analysis_agent(tasks: List[Dict[str, Any]], schedule: List[Dict[str, Any]], model: str, client) -> List[Dict[str, Any]]:
     """
     Agent 4: Identify top risks with severity levels and mitigation strategies.
     """
@@ -202,11 +202,11 @@ Return a JSON object:
 
 Focus on realistic, specific risks that could actually occur during project execution."""
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(model=model, contents=prompt)
     result = validate_json_response(response.text)
     return result.get('risks', [])
 
-def optimization_agent(tasks: List[Dict[str, Any]], schedule: List[Dict[str, Any]], risks: List[Dict[str, Any]], model) -> List[Dict[str, Any]]:
+def optimization_agent(tasks: List[Dict[str, Any]], schedule: List[Dict[str, Any]], risks: List[Dict[str, Any]], model: str, client) -> List[Dict[str, Any]]:
     """
     Agent 5: Suggest optimizations for scope, timeline, and task organization.
     """
@@ -245,30 +245,55 @@ Return a JSON object:
 
 Provide 8-12 specific optimizations that would meaningfully improve the project plan."""
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(model=model, contents=prompt)
     result = validate_json_response(response.text)
     return result.get('optimizations', [])
 
-def run_planning_pipeline(goal: str, start_date: str, deadline: str, hours_per_week: int, model) -> Dict[str, Any]:
+def run_planning_pipeline(goal: str, start_date: str, deadline: str, hours_per_week: int, model: str, client, progress_callback=None) -> Dict[str, Any]:
     """
-    Run the complete 5-agent planning pipeline.
+    Run the complete 5-agent planning pipeline with timing and progress tracking.
     """
     try:
+        agent_times = {}
+        total_start_time = time.time()
+        
         # Agent 1: Decomposition
-        decomposition_result = decomposition_agent(goal, start_date, deadline, hours_per_week, model)
+        if progress_callback:
+            progress_callback("🧠 Decomposition Agent: Breaking down your goal...", 10)
+        start_time = time.time()
+        decomposition_result = decomposition_agent(goal, start_date, deadline, hours_per_week, model, client)
         tasks = decomposition_result.get('tasks', [])
+        agent_times['decomposition'] = time.time() - start_time
         
         # Agent 2: Prioritization
-        prioritized_tasks = prioritization_agent(tasks, model)
+        if progress_callback:
+            progress_callback("⚡ Prioritization Agent: Scoring tasks by impact and urgency...", 30)
+        start_time = time.time()
+        prioritized_tasks = prioritization_agent(tasks, model, client)
+        agent_times['prioritization'] = time.time() - start_time
         
         # Agent 3: Scheduling
-        schedule = scheduling_agent(prioritized_tasks, start_date, deadline, hours_per_week, model)
+        if progress_callback:
+            progress_callback("📅 Scheduling Agent: Creating your optimal timeline...", 50)
+        start_time = time.time()
+        schedule = scheduling_agent(prioritized_tasks, start_date, deadline, hours_per_week, model, client)
+        agent_times['scheduling'] = time.time() - start_time
         
         # Agent 4: Risk Analysis
-        risks = risk_analysis_agent(prioritized_tasks, schedule, model)
+        if progress_callback:
+            progress_callback("⚠️ Risk Analysis Agent: Identifying potential challenges...", 70)
+        start_time = time.time()
+        risks = risk_analysis_agent(prioritized_tasks, schedule, model, client)
+        agent_times['risk_analysis'] = time.time() - start_time
         
         # Agent 5: Optimization
-        optimizations = optimization_agent(prioritized_tasks, schedule, risks, model)
+        if progress_callback:
+            progress_callback("🔧 Optimization Agent: Finding improvements...", 90)
+        start_time = time.time()
+        optimizations = optimization_agent(prioritized_tasks, schedule, risks, model, client)
+        agent_times['optimization'] = time.time() - start_time
+        
+        total_time = time.time() - total_start_time
         
         # Compile final result
         result = {
@@ -280,7 +305,15 @@ def run_planning_pipeline(goal: str, start_date: str, deadline: str, hours_per_w
             'schedule': schedule,
             'risks': risks,
             'optimizations': optimizations,
-            'generated_at': datetime.now().isoformat()
+            'generated_at': datetime.now().isoformat(),
+            'performance_metrics': {
+                'total_time': round(total_time, 2),
+                'agent_times': {k: round(v, 2) for k, v in agent_times.items()},
+                'total_tasks': len(prioritized_tasks),
+                'total_schedule_weeks': len(schedule),
+                'total_risks': len(risks),
+                'total_optimizations': len(optimizations)
+            }
         }
         
         return result

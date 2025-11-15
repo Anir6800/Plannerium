@@ -1,5 +1,5 @@
 Flask==2.3.3
-google-generativeai==0.3.2
+google-genai==0.8.0
 python-dotenv==1.0.0
 weasyprint==59.0
 pandas==2.1.1
