@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plannerium - Intelligent Multi-Agent Planning System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>🚀 Plannerium</h1>
+                    <p>Intelligent Multi-Agent Planning System</p>
+                </div>
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-icon" title="Toggle Theme">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <button id="chat-toggle" class="btn-icon" title="Toggle Chat">
+                        💬
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section card">
+                <h2>Project Configuration</h2>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="goal">Project Goal</label>
+                        <textarea id="goal" placeholder="Describe your project goal..." rows="3"></textarea>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="start-date">Start Date</label>
+                            <input type="date" id="start-date">
+                        </div>
+                        <div class="input-group">
+                            <label for="deadline">Deadline</label>
+                            <input type="date" id="deadline">
+                        </div>
+                        <div class="input-group">
+                            <label for="hours-per-week">Hours per Week</label>
+                            <input type="number" id="hours-per-week" min="1" max="80" value="20">
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="generate-plan" class="btn-primary">
+                        <span class="btn-icon">⚡</span>
+                        Generate Plan
+                    </button>
+                    <div class="project-controls">
+                        <select id="project-select" class="select-input">
+                            <option value="">Load Project...</option>
+                        </select>
+                        <button id="save-project" class="btn-secondary">Save</button>
+                        <button id="delete-project" class="btn-danger">Delete</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" style="display: none;">
+                <!-- Export Controls -->
+                <div class="export-controls card">
+                    <h3>Export Options</h3>
+                    <div class="export-buttons">
+                        <button id="export-csv" class="btn-export">
+                            <span>📊</span> Export CSV
+                        </button>
+                        <button id="export-pdf" class="btn-export">
+                            <span>📄</span> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs-container card">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" data-tab="tasks">📋 Tasks</button>
+                        <button class="tab-btn" data-tab="schedule">📅 Schedule</button>
+                        <button class="tab-btn" data-tab="risks">⚠️ Risks</button>
+                        <button class="tab-btn" data-tab="optimizer">🔧 Optimizer</button>
+                        <button class="tab-btn" data-tab="visuals">📈 Visuals</button>
+                    </div>
+
+                    <div class="tabs-content">
+                        <!-- Tasks Tab -->
+                        <div id="tasks-tab" class="tab-content active">
+                            <h3>Task Breakdown</h3>
+                            <div id="tasks-container"></div>
+                            <div class="progress-section">
+                                <h4>Project Progress</h4>
+                                <div class="progress-item">
+                                    <label>Overall Progress</label>
+                                    <div class="progress-bar">
+                                        <div id="overall-progress" class="progress-fill"></div>
+                                    </div>
+                                    <span id="progress-text">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedule Tab -->
+                        <div id="schedule-tab" class="tab-content">
+                            <h3>Weekly Schedule</h3>
+                            <div id="schedule-container"></div>
+                        </div>
+
+                        <!-- Risks Tab -->
+                        <div id="risks-tab" class="tab-content">
+                            <h3>Risk Analysis</h3>
+                            <div id="risks-container"></div>
+                        </div>
+
+                        <!-- Optimizer Tab -->
+                        <div id="optimizer-tab" class="tab-content">
+                            <h3>Optimization Suggestions</h3>
+                            <div id="optimizer-container"></div>
+                        </div>
+
+                        <!-- Visuals Tab -->
+                        <div id="visuals-tab" class="tab-content">
+                            <h3>Project Visualizations</h3>
+                            <div class="charts-grid">
+                                <div class="chart-container">
+                                    <h4>Weekly Hours Load</h4>
+                                    <canvas id="hours-chart"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h4>Task Distribution</h4>
+                                    <canvas id="distribution-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Chat Assistant Panel -->
+        <aside id="chat-panel" class="chat-panel">
+            <div class="chat-header">
+                <h3>🤖 AI Assistant</h3>
+                <button id="close-chat" class="btn-icon">✕</button>
+            </div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input-container">
+                <div class="chat-input-group">
+                    <input type="text" id="chat-input" placeholder="Ask me anything about your project...">
+                    <button id="send-chat" class="btn-primary">Send</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-text">Generating your plan...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
