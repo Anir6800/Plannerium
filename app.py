@@ -1,9 +1,13 @@
 import os
 import json
 from datetime import datetime, timedelta
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
+import base64
 from flask_cors import CORS
-from google import genai
+try:
+    from google import genai
+except Exception:
+    genai = None
 from dotenv import load_dotenv
 from utils import save_project_to_file, load_project_from_file, generate_csv, generate_pdf
 from agents import run_planning_pipeline
@@ -16,11 +20,17 @@ CORS(app)
 
 # Configure Gemini API
 gemini_api_key = os.getenv('GEMINI_API_KEY')
-if not gemini_api_key:
-    raise ValueError("GEMINI_API_KEY environment variable is required")
 
-# Initialize the new Google GenAI client
-client = genai.Client(api_key=gemini_api_key)
+# Initialize the new Google GenAI client when available
+if gemini_api_key and genai is not None:
+    try:
+        client = genai.Client(api_key=gemini_api_key)
+    except Exception:
+        client = None
+else:
+    client = None
+
+# Model id (kept even if client is None so callers can see the intended model)
 model = "gemini-2.5-flash"
 
 # Ensure storage directory exists
@@ -36,6 +46,10 @@ def index():
     """Render the main application interface."""
     return render_template('index.html')
 
+@app.route('/image/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('image', filename)
+
 @app.route('/api/plan', methods=['POST'])
 def generate_plan():
     """Generate a comprehensive project plan using the multi-agent pipeline."""
@@ -48,15 +62,85 @@ def generate_plan():
             if field not in data:
                 return jsonify({'error': f'Missing required field: {field}'}), 400
         
-        # Run the multi-agent planning pipeline
-        plan_result = run_planning_pipeline(
-            goal=data['goal'],
-            start_date=data['start_date'],
-            deadline=data['deadline'],
-            hours_per_week=data['hours_per_week'],
-            model=model,
-            client=client
-        )
+        # If the GenAI client is not configured, return a lightweight demo plan
+        if client is None:
+            # Create a simple mock plan so the UI can be tested without an API key
+            try:
+                sd = datetime.fromisoformat(data['start_date'])
+                ed = datetime.fromisoformat(data['deadline'])
+            except Exception:
+                sd = datetime.now()
+                ed = sd + timedelta(weeks=4)
+
+            days = max(1, (ed - sd).days)
+            weeks = max(1, (days // 7) + 1)
+
+            tasks = []
+            for i in range(1, 7):
+                tasks.append({
+                    'id': f'task_{i}',
+                    'title': f'Sample Task {i}',
+                    'description': 'This is a demo task generated in offline/demo mode.',
+                    'milestone': f'Milestone {((i-1)//2)+1}',
+                    'estimated_hours': max(1, int(data['hours_per_week']) // 3),
+                    'dependencies': [],
+                    'deliverable': 'Demo deliverable',
+                    'impact_score': 6,
+                    'urgency_score': 5,
+                    'effort_score': 5,
+                    'priority_score': 16,
+                    'priority_label': 'Medium'
+                })
+
+            schedule = []
+            for w in range(weeks):
+                schedule.append({
+                    'week_start': (sd + timedelta(weeks=w)).date().isoformat(),
+                    'week_number': w + 1,
+                    'hours_planned': int(data['hours_per_week']),
+                    'tasks': [
+                        {
+                            'task_id': tasks[(w) % len(tasks)]['id'],
+                            'task_title': tasks[(w) % len(tasks)]['title'],
+                            'hours_assigned': int(data['hours_per_week']) // 2,
+                            'milestone': tasks[(w) % len(tasks)]['milestone']
+                        }
+                    ]
+                })
+
+            plan_result = {
+                'goal': data['goal'],
+                'start_date': data['start_date'],
+                'deadline': data['deadline'],
+                'hours_per_week': data['hours_per_week'],
+                'tasks': tasks,
+                'schedule': schedule,
+                'risks': [
+                    {'id': 'risk_1', 'description': 'Demo risk: scope creep', 'probability': 'Medium', 'impact': 'Medium', 'severity': 'Medium', 'mitigation': 'Keep scope small'}
+                ],
+                'optimizations': [
+                    {'category': 'Scope Reduction', 'title': 'Demo: Use library', 'description': 'Use existing libraries to save time', 'impact': 'Saves time', 'priority': 'Medium'}
+                ],
+                'generated_at': datetime.now().isoformat(),
+                'performance_metrics': {
+                    'total_time': 0.0,
+                    'agent_times': {},
+                    'total_tasks': len(tasks),
+                    'total_schedule_weeks': len(schedule),
+                    'total_risks': 1,
+                    'total_optimizations': 1
+                }
+            }
+        else:
+            # Run the multi-agent planning pipeline
+            plan_result = run_planning_pipeline(
+                goal=data['goal'],
+                start_date=data['start_date'],
+                deadline=data['deadline'],
+                hours_per_week=data['hours_per_week'],
+                model=model,
+                client=client
+            )
         
         # Log performance metrics
         if 'performance_metrics' in plan_result:
@@ -168,8 +252,9 @@ def export_pdf():
         if not pdf_content:
             return jsonify({'error': 'PDF generation not available. Please install WeasyPrint dependencies.'}), 503
         
+        encoded = base64.b64encode(pdf_content).decode('ascii')
         return jsonify({
-            'pdf_content': pdf_content.decode('latin1'),  # Encode for JSON transmission
+            'pdf_content': encoded,
             'filename': f"{project_data.get('project_name', 'project')}_plan.pdf"
         })
     
@@ -198,8 +283,17 @@ User Question: {message}
 
 Please provide a helpful, concise response focused on project planning, task management, and productivity."""
         
+        if client is None:
+            # Return a friendly demo-mode response when AI client is not configured
+            demo_reply = (
+                "You're running Plannerium in demo mode. "
+                "Set the GEMINI_API_KEY environment variable and install the Google GenAI SDK to enable full AI chat responses. "
+                "In the meantime, here's a quick tip: break large goals into smaller milestones and assign weekly timeboxes."
+            )
+            return jsonify({'response': demo_reply, 'timestamp': datetime.now().isoformat()})
+
         response = client.models.generate_content(model=model, contents=prompt)
-        
+
         return jsonify({
             'response': response.text,
             'timestamp': datetime.now().isoformat()

@@ -250,6 +250,32 @@ body {
     color: var(--text-primary);
 }
 
+/* Constrain header logo size to prevent oversized image display */
+.logo-container {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 6px;
+    display: block;
+}
+
+.logo-container.horizontal {
+    width: 180px;
+    height: 48px;
+}
+
+.footer-logo-image {
+    max-width: 220px;
+    height: auto;
+}
+
 .logo-icon {
     width: 40px;
     height: 40px;
@@ -429,6 +455,84 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: var(--space-16);
     align-items: center;
+    /* Enhanced demo UI */
+    .demo-input h3 {
+        margin-bottom: var(--space-2);
+    }
+    .demo-form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+    .demo-textarea {
+        width: 100%;
+        min-height: 150px;
+        resize: vertical;
+        padding: 14px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        box-shadow: 0 8px 24px rgba(13, 27, 40, 0.06);
+        font-size: var(--font-size-base);
+        transition: var(--transition-normal);
+    }
+    .demo-textarea:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 10px 30px rgba(59,130,246,0.08);
+    }
+    .demo-form-actions {
+        display: flex;
+        gap: var(--space-3);
+        align-items: center;
+    }
+    .demo-generate {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .demo-output {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: var(--space-6);
+        border-radius: var(--radius-2xl);
+        min-height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .demo-placeholder {
+        text-align: center;
+        color: var(--text-secondary);
+    }
+    .demo-placeholder i {
+        font-size: 48px;
+        color: var(--primary-500);
+        display: block;
+        margin-bottom: var(--space-4);
+    }
+    .demo-loading .spinner {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 4px solid rgba(0,0,0,0.05);
+        border-top-color: var(--primary-500);
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    /* Responsive */
+    @media (max-width: 900px) {
+        .demo-container {
+            grid-template-columns: 1fr;
+        }
+        .demo-output {
+            min-height: 220px;
+        }
+    }
 }
 
 .hero-text {
@@ -1372,4 +1476,150 @@ body {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+.hero-buttons {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    transition: var(--transition-normal);
+}
+
+.cta-button.primary {
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+    color: white;
+    box-shadow: var(--shadow-lg);
+}
+
+.cta-button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.cta-button.secondary {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+}
+
+.cta-button.secondary:hover {
+    background: var(--bg-secondary);
+    transform: translateY(-1px);
+}
+
+.cta-button.large {
+    padding: var(--space-5) var(--space-8);
+    font-size: var(--font-size-lg);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.app-preview {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-2xl);
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-6);
+}
+
+.preview-dots {
+    display: flex;
+    gap: var(--space-2);
+    margin-right: var(--space-4);
+}
+
+.preview-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--border-secondary);
+}
+
+.preview-dots span:nth-child(1) { background: #ef4444; }
+.preview-dots span:nth-child(2) { background: #f59e0b; }
+.preview-dots span:nth-child(3) { background: #22c55e; }
+
+.preview-title {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.preview-task {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-secondary);
+}
+
+.preview-task i {
+    color: var(--primary-500);
+}
+
+.preview-chart {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+    align-items: end;
+    height: 120px;
+}
+
+.preview-chart .chart-bar {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-md);
+}
+
+.demo-input {
+    background: var(--bg-primary);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-primary);
+}
+
+.demo-form textarea {
+    padding: var(--space-4);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    transition: var(--transition-fast);
+    font-family: var(--font-family);
+    min-height: 120px;
+}
+
+.demo-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
