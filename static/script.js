@@ -346,22 +346,23 @@ document.getElementById('generate-plan')?.addEventListener('click', async () => 
     try {
         // Wait for both Animation and API
         const [_, data] = await Promise.all([animationPromise, apiPromise]);
-        
+
         if (data.error) throw new Error(data.error);
-        
+
         currentPlan = data;
-        renderPlan(data);
-        
+
+        // Save to Firebase and get project ID
+        const projectId = await saveProjectToFirebase(data);
+
         // Success Transition
         Features.finishAgentSequence(true);
-        
+
         setTimeout(() => {
             Features.closeAgentOverlay();
-            document.getElementById('results-section').style.display = 'block';
-            scrollToSection('results-section');
-            showToast('Plan Generated Successfully!', 'success');
+            // Redirect to Mission Execution Interface
+            window.location.href = `/execution/${projectId}`;
         }, 1500);
-        
+
     } catch (error) {
         console.error('Planning failed:', error);
         Features.finishAgentSequence(false, error.message);
@@ -492,14 +493,45 @@ function renderProjectAnalytics() {
     `;
 }
 
+// --- SAVE PROJECT TO FIREBASE ---
+async function saveProjectToFirebase(planData) {
+    return new Promise((resolve, reject) => {
+        const user = auth.currentUser;
+        if (!user) {
+            reject(new Error('User not authenticated'));
+            return;
+        }
+
+        const newProjectRef = database.ref('users/' + user.uid + '/projects').push();
+        const projectId = newProjectRef.key;
+
+        newProjectRef.set({
+            ...planData,
+            created_at: new Date().toISOString(),
+            status: 'active',
+            project_name: planData.goal ? planData.goal.substring(0, 50) + (planData.goal.length > 50 ? '...' : '') : 'Untitled Mission'
+        }).then(() => {
+            // Log activity
+            database.ref('users/' + user.uid + '/activity').push({
+                message: `New mission initiated: ${planData.goal ? planData.goal.substring(0, 20) + '...' : 'New Project'}`,
+                timestamp: new Date().toISOString()
+            });
+
+            resolve(projectId);
+        }).catch(error => {
+            reject(error);
+        });
+    });
+}
+
 // --- CURSOR LOGIC FOR MODALS ---
 document.addEventListener('mouseover', (e) => {
     const target = e.target;
     const isModal = target.closest('.modal-content') || target.closest('.auth-container') || target.closest('.login-container');
-    
+
     const dot = document.querySelector('.cursor-dot');
     const outline = document.querySelector('.cursor-outline');
-    
+
     if (isModal) {
         if (dot) dot.style.opacity = '0';
         if (outline) outline.style.opacity = '0';

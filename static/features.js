@@ -193,8 +193,8 @@ const Features = {
     },
 
     initiateMission: function(id) {
-        // Redirect to app with project ID
-        window.location.href = `/app?projectId=${id}`;
+        // Redirect to Mission Execution Interface
+        window.location.href = `/execution/${id}`;
     },
 
     // 2A. Neural Link (Real-time Collaboration)

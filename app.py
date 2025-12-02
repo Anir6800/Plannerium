@@ -71,6 +71,11 @@ def settings():
     """Render the Settings page."""
     return render_template('settings.html')
 
+@app.route('/execution/<project_id>')
+def execution(project_id):
+    """Render the Mission Execution Interface."""
+    return render_template('execution.html', project_id=project_id)
+
 @app.route('/image/<path:filename>')
 def serve_image(filename):
     return send_from_directory('image', filename)
