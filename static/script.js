@@ -1,6 +1,7 @@
 // Global variables
 let currentPlan = null;
 let currentProjectName = '';
+let currentProjectId = null;
 let charts = {};
 let chatContext = '';
 let timeTracking = {
@@ -10,7 +11,52 @@ let timeTracking = {
     progressData: {}
 };
 
-// Time tracking functions
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    initGamification();
+    initCyberMode();
+    initTheme();
+    
+    // Check for project ID in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('projectId');
+    if (projectId) {
+        loadProjectFromURL(projectId);
+    }
+});
+
+function loadProjectFromURL(projectId) {
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            const projectRef = database.ref('users/' + user.uid + '/projects/' + projectId);
+            projectRef.once('value', (snapshot) => {
+                const project = snapshot.val();
+                if (project) {
+                    currentPlan = project;
+                    currentProjectId = projectId;
+                    currentProjectName = project.project_name || 'Untitled Project';
+                    
+                    // Populate inputs
+                    if (document.getElementById('goal')) document.getElementById('goal').value = project.goal || '';
+                    if (document.getElementById('start-date')) document.getElementById('start-date').value = project.start_date || '';
+                    if (document.getElementById('deadline')) document.getElementById('deadline').value = project.deadline || '';
+                    if (document.getElementById('hours-per-week')) document.getElementById('hours-per-week').value = project.hours_per_week || 20;
+                    
+                    // Render Plan
+                    renderPlan(project);
+                    
+                    // Show Results Section
+                    document.getElementById('results-section').style.display = 'block';
+                    scrollToSection('results-section');
+                    
+                    showToast('Project Loaded: ' + currentProjectName, 'success');
+                } else {
+                    showToast('Project not found', 'error');
+                }
+            });
+        }
+    });
+}
 function initializeTimeTracking() {
     timeTracking.projectStartTime = new Date().getTime();
     timeTracking.taskTimers = {};
@@ -232,12 +278,7 @@ function initCyberMode() {
     }
 }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    initGamification();
-    initCyberMode();
-    initTheme();
-});
+
 
 // --- EXPORT LOGIC ---
 document.getElementById('export-ics')?.addEventListener('click', async () => {
@@ -287,103 +328,64 @@ document.getElementById('generate-plan')?.addEventListener('click', async () => 
         return;
     }
     
-    // Show Loading Overlay with Terminal Log
-    const overlay = document.getElementById('loading-overlay');
-    const loadingTitle = document.getElementById('loading-title');
-    const loadingText = document.getElementById('loading-text');
-    const agentStatus = document.getElementById('current-agent');
-    const agentTimeline = document.getElementById('agent-timeline');
-    
-    overlay.style.display = 'flex';
-    loadingTitle.textContent = 'INITIALIZING SYSTEM...';
-    loadingText.textContent = 'Establishing secure connection to agent swarm...';
-    agentTimeline.innerHTML = ''; // Clear previous logs
-    
-    // Terminal Log Animation Helper
-    const addLog = (message, type = 'info') => {
-        const logLine = document.createElement('div');
-        logLine.className = `log-line log-${type}`;
-        logLine.style.fontFamily = "'Fira Code', monospace";
-        logLine.style.marginBottom = "5px";
-        logLine.style.opacity = "0";
-        logLine.innerHTML = `<span style="color: #0f0;">></span> ${message}`;
-        agentTimeline.appendChild(logLine);
-        
-        // Typewriter effect or fade in
-        setTimeout(() => {
-            logLine.style.transition = "opacity 0.3s";
-            logLine.style.opacity = "1";
-        }, 50);
-        
-        // Auto scroll
-        agentTimeline.scrollTop = agentTimeline.scrollHeight;
-    };
-    
-    // Simulation of agents
-    const steps = [
-        { msg: "[SYSTEM] Initializing Multi-Agent Swarm...", delay: 500 },
-        { msg: "[AGENT_01] Decomposition... OK", delay: 1500 },
-        { msg: "[AGENT_02] Risk Analysis... SCANNING", delay: 2500 },
-        { msg: "[AGENT_03] Optimization... COMPLETE", delay: 3500 },
-        { msg: "[SYSTEM] Compiling Final Plan...", delay: 4500 }
-    ];
-    
-    let stepIndex = 0;
-    const interval = setInterval(() => {
-        if (stepIndex < steps.length) {
-            addLog(steps[stepIndex].msg);
-            agentStatus.textContent = steps[stepIndex].msg.split(']')[0].replace('[', '') + ' ACTIVE';
-            stepIndex++;
-        }
-    }, 1000);
+    // Start Cinematic Sequence
+    const animationPromise = Features.startAgentSequence();
+
+    // Start API Call
+    const apiPromise = fetch('/api/plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            goal,
+            start_date: startDate,
+            deadline,
+            hours_per_week: hoursPerWeek
+        })
+    }).then(response => response.json());
 
     try {
-        const response = await fetch('/api/plan', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                goal,
-                start_date: startDate,
-                deadline,
-                hours_per_week: hoursPerWeek
-            })
-        });
-        
-        const data = await response.json();
-        clearInterval(interval);
+        // Wait for both Animation and API
+        const [_, data] = await Promise.all([animationPromise, apiPromise]);
         
         if (data.error) throw new Error(data.error);
         
         currentPlan = data;
         renderPlan(data);
         
-        // Hide overlay
+        // Success Transition
+        Features.finishAgentSequence(true);
+        
         setTimeout(() => {
-            overlay.style.display = 'none';
+            Features.closeAgentOverlay();
             document.getElementById('results-section').style.display = 'block';
             scrollToSection('results-section');
             showToast('Plan Generated Successfully!', 'success');
-        }, 1000);
+        }, 1500);
         
     } catch (error) {
-        clearInterval(interval);
         console.error('Planning failed:', error);
+        Features.finishAgentSequence(false, error.message);
         showToast('Planning failed: ' + error.message, 'error');
-        overlay.style.display = 'none';
     }
 });
 
 function renderPlan(plan) {
     const tasksContainer = document.getElementById('tasks-container');
     if (tasksContainer) {
-        tasksContainer.innerHTML = plan.tasks.map(t => `
-            <div class="task-card glass-card" style="margin-bottom: 15px; padding: 15px;">
-                <div style="display:flex; justify-content:space-between;">
-                    <h4>${t.title}</h4>
+        tasksContainer.innerHTML = plan.tasks.map((t, index) => `
+            <div class="task-card glass-card ${t.completed ? 'completed' : ''}" style="margin-bottom: 15px; padding: 15px; border-left: 4px solid ${t.completed ? '#0f0' : '#333'};">
+                <div style="display:flex; justify-content:space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" class="task-checkbox" 
+                               ${t.completed ? 'checked' : ''} 
+                               onchange="toggleTaskCompletion(${index}, this.checked)"
+                               style="accent-color: #0f0; width: 18px; height: 18px; cursor: pointer;">
+                        <h4 style="margin: 0; text-decoration: ${t.completed ? 'line-through' : 'none'}; color: ${t.completed ? '#888' : '#fff'};">${t.title}</h4>
+                    </div>
                     <span class="badge">${t.priority_label}</span>
                 </div>
-                <p>${t.description}</p>
-                <div class="task-meta" style="margin-top: 10px; font-size: 0.9em; color: #888;">
+                <p style="margin-left: 28px; color: ${t.completed ? '#666' : '#aaa'};">${t.description}</p>
+                <div class="task-meta" style="margin-top: 10px; margin-left: 28px; font-size: 0.9em; color: #888;">
                     <span><i class="fas fa-clock"></i> ${t.estimated_hours}h</span>
                     <span style="margin-left: 15px;"><i class="fas fa-flag"></i> ${t.milestone}</span>
                 </div>
@@ -392,8 +394,102 @@ function renderPlan(plan) {
     }
     
     // Update progress
-    document.getElementById('progress-text').textContent = '0%';
-    document.getElementById('overall-progress').style.width = '0%';
+    updateProgressUI();
+    
+    // Render Analytics
+    renderProjectAnalytics();
+}
+
+function toggleTaskCompletion(index, isCompleted) {
+    if (!currentPlan || !currentPlan.tasks[index]) return;
+    
+    currentPlan.tasks[index].completed = isCompleted;
+    
+    // Update UI immediately
+    renderPlan(currentPlan);
+    
+    if (isCompleted) {
+        showToast('+XP TASK COMPLETED', 'success');
+        // Trigger gamification update if available
+        if (typeof updateXP === 'function') updateXP(50); 
+    }
+
+    // Update Firebase
+    if (currentProjectId && auth.currentUser) {
+        const updates = {};
+        updates[`users/${auth.currentUser.uid}/projects/${currentProjectId}/tasks/${index}/completed`] = isCompleted;
+        
+        // Recalculate progress
+        const total = currentPlan.tasks.length;
+        const completed = currentPlan.tasks.filter(t => t.completed).length;
+        const progress = Math.round((completed / total) * 100);
+        updates[`users/${auth.currentUser.uid}/projects/${currentProjectId}/progress`] = progress;
+        
+        database.ref().update(updates);
+    }
+}
+
+function updateProgressUI() {
+    if (!currentPlan || !currentPlan.tasks) return;
+    const total = currentPlan.tasks.length;
+    const completed = currentPlan.tasks.filter(t => t.completed).length;
+    const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+    
+    const text = document.getElementById('progress-text');
+    // Try to find the progress bar in the results section
+    const resultBar = document.querySelector('#tasks-tab .progress-bar > div') || document.getElementById('overall-progress');
+    
+    if (text) text.textContent = progress + '%';
+    if (resultBar) resultBar.style.width = progress + '%';
+}
+
+function renderProjectAnalytics() {
+    // Find container (Visuals tab)
+    const container = document.getElementById('visuals-tab');
+    if (!container) return;
+    
+    // Check if analytics section exists
+    let analyticsSection = document.getElementById('project-analytics-section');
+    if (!analyticsSection) {
+        analyticsSection = document.createElement('div');
+        analyticsSection.id = 'project-analytics-section';
+        analyticsSection.className = 'glass-card';
+        analyticsSection.style.marginTop = '20px';
+        analyticsSection.innerHTML = '<h3><i class="fas fa-chart-pie"></i> REAL-TIME PROJECT ANALYTICS</h3><div class="analytics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;"></div>';
+        // Insert at the top of visuals tab
+        container.insertBefore(analyticsSection, container.firstChild);
+    }
+    
+    const grid = analyticsSection.querySelector('.analytics-grid');
+    
+    // Calculate Metrics
+    const totalTasks = currentPlan.tasks.length;
+    const completedTasks = currentPlan.tasks.filter(t => t.completed).length;
+    
+    const totalHours = currentPlan.tasks.reduce((sum, t) => sum + (parseInt(t.estimated_hours) || 0), 0);
+    const completedHours = currentPlan.tasks.filter(t => t.completed).reduce((sum, t) => sum + (parseInt(t.estimated_hours) || 0), 0);
+    
+    const risks = currentPlan.risks || [];
+    const highRisks = risks.filter(r => (r.severity || '').toLowerCase() === 'high').length;
+    const riskScore = Math.max(0, 100 - (highRisks * 10)); // Simple score
+    
+    grid.innerHTML = `
+        <div class="stat-card" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 0.8rem; color: #888;">COMPLETION VELOCITY</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #0f0;">${completedTasks}/${totalTasks}</div>
+            <div style="font-size: 0.7rem; color: #666;">TASKS</div>
+        </div>
+        <div class="stat-card" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 0.8rem; color: #888;">EFFICIENCY RATE</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #0ff;">${totalHours > 0 ? Math.round((completedHours / totalHours) * 100) : 0}%</div>
+            <div style="font-size: 0.7rem; color: #666;">HOURS BURNED</div>
+        </div>
+        <div class="stat-card" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 0.8rem; color: #888;">RISK EXPOSURE</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: ${riskScore < 50 ? '#f00' : '#ff0'};">${100 - riskScore}%</div>
+            <div style="font-size: 0.7rem; color: #666;">${highRisks} HIGH SEVERITY</div>
+        </div>
+    `;
 }
 
 // --- CURSOR LOGIC FOR MODALS ---

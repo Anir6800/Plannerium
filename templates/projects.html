@@ -198,35 +198,40 @@
             return;
         }
 
-        const btn = document.querySelector('.btn-terminal');
-        const originalText = btn.innerText;
-        btn.innerText = '[ PROCESSING... ]';
-        btn.disabled = true;
+        // Start Cinematic Sequence
+        const animationPromise = Features.startAgentSequence();
+
+        // Start API Call
+        const apiPromise = fetch('/api/plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                goal: goal,
+                start_date: startDate,
+                deadline: deadline,
+                hours_per_week: hours
+            })
+        }).then(response => response.json());
 
         try {
-            const response = await fetch('/api/plan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    goal: goal,
-                    start_date: startDate,
-                    deadline: deadline,
-                    hours_per_week: hours
-                })
-            });
-
-            const data = await response.json();
+            // Wait for both
+            const [_, data] = await Promise.all([animationPromise, apiPromise]);
             
             if (data.error) throw new Error(data.error);
 
             renderTasks(data.tasks);
             saveToFirebase(data);
+            
+            // Success Transition
+            Features.finishAgentSequence(true);
+            
+            setTimeout(() => {
+                Features.closeAgentOverlay();
+            }, 1500);
 
         } catch (error) {
+            Features.finishAgentSequence(false, error.message);
             alert('ERROR: ' + error.message);
-        } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
         }
     }
 
