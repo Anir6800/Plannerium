@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Mission Control{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .widget-card {
+        background: #111;
+        border: 1px solid #333;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .widget-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #333;
+    }
+
+    .widget-title {
+        font-size: 0.8rem;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .widget-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        font-family: 'Fira Code', monospace;
+    }
+
+    .status-online {
+        color: #0f0;
+        text-shadow: 0 0 10px #0f0;
+    }
+
+    .activity-stream {
+        background: #050505;
+        border: 1px solid #333;
+        padding: 20px;
+        font-family: 'Fira Code', monospace;
+        height: 300px;
+        overflow-y: auto;
+    }
+
+    .activity-header {
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .activity-item {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        color: #aaa;
+        display: flex;
+        gap: 10px;
+    }
+
+    .timestamp {
+        color: #555;
+    }
+
+    .blink {
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Mission Control</h1>
+    <p>Welcome back, Commander.</p>
+    <br>
+
+    <!-- Widgets Grid -->
+    <div class="dashboard-grid">
+        <div class="widget-card">
+            <div class="widget-title">Active Missions</div>
+            <div class="widget-value" id="active-missions">--</div>
+        </div>
+        <div class="widget-card">
+            <div class="widget-title">Focus Time (Hrs)</div>
+            <div class="widget-value" id="focus-time">--</div>
+        </div>
+        <div class="widget-card">
+            <div class="widget-title">System Status</div>
+            <div class="widget-value status-online">ONLINE</div>
+        </div>
+    </div>
+
+    <!-- 2J. Global Leaderboard -->
+    <div class="dashboard-grid">
+        <div class="widget-card" style="grid-column: 1 / -1;">
+            <div class="widget-title"><i class="fas fa-trophy"></i> GLOBAL NETWORK RANK (TOP OPERATORS)</div>
+            <div id="leaderboard-list" class="leaderboard-list">
+                <div class="loading-text">CONNECTING TO GLOBAL NETWORK...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Stream -->
+    <div class="activity-stream">
+        <div class="activity-header">
+            <span>> SYSTEM_LOGS</span>
+            <span class="blink">_</span>
+        </div>
+        <div id="activity-list">
+            <!-- Activity items will be injected here -->
+            <div class="activity-item">
+                <span class="timestamp">[SYSTEM]</span>
+                <span>Initializing dashboard feed...</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // 1. Fetch Active Missions Count
+            const projectsRef = database.ref('users/' + user.uid + '/projects');
+            projectsRef.on('value', (snapshot) => {
+                const projects = snapshot.val();
+                const count = projects ? Object.keys(projects).length : 0;
+                
+                // Animate the number
+                animateValue("active-missions", 0, count, 1000);
+                
+                // 2. Calculate Focus Time (Mock logic: sum of estimated_hours for now)
+                let totalHours = 0;
+                if (projects) {
+                    Object.values(projects).forEach(p => {
+                        if (p.estimated_hours) totalHours += parseInt(p.estimated_hours);
+                    });
+                }
+                animateValue("focus-time", 0, totalHours, 1000);
+            });
+
+            // 3. Fetch Activity Stream
+            const activityRef = database.ref('users/' + user.uid + '/activity').limitToLast(10);
+            activityRef.on('child_added', (snapshot) => {
+                const activity = snapshot.val();
+                addActivityLog(activity.message, activity.timestamp);
+            });
+
+            // Mock Activity if empty (for demo)
+            activityRef.once('value', (snapshot) => {
+                if (!snapshot.exists()) {
+                    // Create a welcome log
+                    const newLogRef = database.ref('users/' + user.uid + '/activity').push();
+                    newLogRef.set({
+                        message: "User session established.",
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+        }
+    });
+
+    function animateValue(id, start, end, duration) {
+        const obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    function addActivityLog(message, timestamp) {
+        const list = document.getElementById('activity-list');
+        const div = document.createElement('div');
+        div.className = 'activity-item';
+        
+        // Format time HH:MM:SS
+        const date = new Date(timestamp);
+        const timeStr = date.toLocaleTimeString('en-US', { hour12: false });
+        
+        div.innerHTML = `
+            <span class="timestamp">[${timeStr}]</span>
+            <span>${message}</span>
+        `;
+        
+        // Prepend to show newest first (after the initial system log)
+        // Or append if we want chronological. Terminal usually appends at bottom.
+        // Let's append to bottom and scroll.
+        list.appendChild(div);
+        
+        // Auto scroll to bottom
+        const stream = document.querySelector('.activity-stream');
+        stream.scrollTop = stream.scrollHeight;
+    }
+</script>
+{% endblock %}

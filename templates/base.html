@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plannerium | {% block title %}Mission Control{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cyberpunk.css') }}">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="{{ url_for('static', filename='firebase-init.js') }}"></script>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">PLANNERIUM</div>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                    [ Mission Control ]
+                </a>
+                <a href="{{ url_for('projects') }}" class="nav-link {% if request.endpoint == 'projects' %}active{% endif %}">
+                    [ Projects ]
+                </a>
+                <a href="{{ url_for('analytics') }}" class="nav-link {% if request.endpoint == 'analytics' %}active{% endif %}">
+                    [ Analytics ]
+                </a>
+                <a href="{{ url_for('settings') }}" class="nav-link {% if request.endpoint == 'settings' %}active{% endif %}">
+                    [ Settings ]
+                </a>
+                <a href="#" id="logout-link" class="nav-link">
+                    [ Terminate Session ]
+                </a>
+            </nav>
+
+            <div class="user-level">
+                <!-- 2G. Avatar Interface -->
+                <div id="ai-core-avatar" class="ai-core idle"></div>
+                
+                <span class="level-label">USER LEVEL</span>
+                <span class="level-value" id="user-level-display">--</span>
+                <div class="xp-progress-container">
+                    <div class="xp-progress-bar" id="xp-progress-bar"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Command Palette Modal -->
+    <div class="modal-overlay" id="command-palette-overlay">
+        <div class="command-palette">
+            <div style="position: relative;">
+                <input type="text" class="palette-input" id="palette-input" placeholder="> Type a command..." autocomplete="off">
+                <!-- 2B. Voice Command Icon -->
+                <button id="voice-command-btn" class="voice-btn" title="Voice Command"><i class="fas fa-microphone"></i></button>
+            </div>
+            <div class="palette-results" id="palette-results">
+                <!-- Results will be populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 2H. Shortcut Matrix Overlay -->
+    <div id="shortcut-overlay" class="shortcut-overlay" style="display: none;">
+        <div class="shortcut-grid">
+            <h2><i class="fas fa-keyboard"></i> NEURAL SHORTCUTS</h2>
+            <div class="shortcut-item"><span class="key">CTRL</span> + <span class="key">K</span> <span>COMMAND PALETTE</span></div>
+            <div class="shortcut-item"><span class="key">?</span> <span>TOGGLE HELP</span></div>
+            <div class="shortcut-item"><span class="key">ESC</span> <span>ABORT / CLOSE</span></div>
+            <div class="shortcut-item"><span class="key">ALT</span> + <span class="key">P</span> <span>NEW PROJECT</span></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='features.js') }}"></script>
+    <script>
+        // --- HIGH-END POLISH SCRIPT ---
+
+        const appContainer = document.querySelector('.app-container');
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+
+        // 1. Page Transitions
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start Up Animation
+            if (appContainer) {
+                appContainer.classList.add('anim-start-up');
+            }
+
+            // Staggered Entry for Dashboard Widgets
+            const widgets = document.querySelectorAll('.widget-card, .activity-stream');
+            widgets.forEach((widget, index) => {
+                widget.classList.add('stagger-item');
+                widget.style.animationDelay = `${index * 100}ms`;
+            });
+
+            // Glitch Text Initialization
+            document.querySelectorAll('h1').forEach(h1 => {
+                h1.setAttribute('data-text', h1.innerText);
+                h1.classList.add('glitch-hover');
+            });
+        });
+
+        // Intercept Links for Shut Down Animation
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link && link.href && !link.href.includes('#') && link.target !== '_blank') {
+                const url = new URL(link.href);
+                if (url.origin === window.location.origin) {
+                    e.preventDefault();
+                    if (appContainer) {
+                        appContainer.classList.remove('anim-start-up');
+                        appContainer.classList.add('anim-shut-down');
+                    }
+                    setTimeout(() => {
+                        window.location.href = link.href;
+                    }, 500);
+                }
+            }
+        });
+
+        // 2. Custom Cursor Logic
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Lagging effect
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Cursor States
+        const interactiveElements = 'a, button, .palette-item, .nav-link';
+        const inputElements = 'input, textarea';
+
+        document.body.addEventListener('mouseover', (e) => {
+            if (e.target.matches(interactiveElements) || e.target.closest(interactiveElements)) {
+                cursorOutline.style.width = '50px';
+                cursorOutline.style.height = '50px';
+                cursorOutline.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            } else if (e.target.matches(inputElements)) {
+                document.body.classList.add('cursor-ibeam');
+            }
+        });
+
+        document.body.addEventListener('mouseout', (e) => {
+            if (e.target.matches(interactiveElements) || e.target.closest(interactiveElements)) {
+                cursorOutline.style.width = '30px';
+                cursorOutline.style.height = '30px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            } else if (e.target.matches(inputElements)) {
+                document.body.classList.remove('cursor-ibeam');
+            }
+        });
+
+        // 3. Magnetic Buttons
+        const magneticElements = document.querySelectorAll('button, .nav-link, .palette-item');
+        magneticElements.forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                // Magnetic pull strength
+                el.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                el.classList.add('magnetic-active');
+            });
+
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'translate(0, 0)';
+                setTimeout(() => {
+                    el.classList.remove('magnetic-active');
+                }, 100);
+            });
+        });
+
+        // Command Palette Logic
+        const paletteOverlay = document.getElementById('command-palette-overlay');
+        const paletteInput = document.getElementById('palette-input');
+        const paletteResults = document.getElementById('palette-results');
+
+        const commands = [
+            { name: 'Mission Control', url: "{{ url_for('dashboard') }}" },
+            { name: 'Projects', url: "{{ url_for('projects') }}" },
+            { name: 'Analytics', url: "{{ url_for('analytics') }}" },
+            { name: 'Settings', url: "{{ url_for('settings') }}" },
+            { name: 'New Project', url: "{{ url_for('projects') }}?action=new" }, // Example
+        ];
+
+        function togglePalette() {
+            const isActive = paletteOverlay.classList.contains('active');
+            if (isActive) {
+                paletteOverlay.classList.remove('active');
+            } else {
+                paletteOverlay.classList.add('active');
+                paletteInput.value = '';
+                renderResults(commands);
+                paletteInput.focus();
+            }
+        }
+
+        // Keyboard Shortcut (Ctrl+K)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                togglePalette();
+            }
+            if (e.key === 'Escape' && paletteOverlay.classList.contains('active')) {
+                togglePalette();
+            }
+        });
+
+        // Close on click outside
+        paletteOverlay.addEventListener('click', function(e) {
+            if (e.target === paletteOverlay) {
+                togglePalette();
+            }
+        });
+
+        // Filter and Render Results
+        function renderResults(items) {
+            paletteResults.innerHTML = '';
+            items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'palette-item';
+                if (index === 0) div.classList.add('selected'); // Select first by default
+                div.innerHTML = `<span>${item.name}</span><span class="shortcut-hint">JUMP</span>`;
+                div.addEventListener('click', () => {
+                    window.location.href = item.url;
+                });
+                // Add magnetic effect to dynamic items
+                div.addEventListener('mousemove', (e) => {
+                    const rect = div.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    div.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
+                });
+                div.addEventListener('mouseleave', () => {
+                    div.style.transform = 'translate(0, 0)';
+                });
+                paletteResults.appendChild(div);
+            });
+        }
+
+        paletteInput.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const filtered = commands.filter(cmd => cmd.name.toLowerCase().includes(query));
+            renderResults(filtered);
+        });
+
+        // Keyboard navigation in palette
+        paletteInput.addEventListener('keydown', function(e) {
+            const items = document.querySelectorAll('.palette-item');
+            let selectedIndex = Array.from(items).findIndex(item => item.classList.contains('selected'));
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex + 1) % items.length;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (selectedIndex >= 0) {
+                    items[selectedIndex].click();
+                }
+            }
+
+            items.forEach((item, index) => {
+                if (index === selectedIndex) item.classList.add('selected');
+                else item.classList.remove('selected');
+            });
+        });
+
+        // User Level & Auth Check
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                const userRef = database.ref('users/' + user.uid + '/profile');
+                userRef.on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data && data.level) {
+                        document.getElementById('user-level-display').textContent = 'LVL ' + data.level;
+                    } else {
+                        // Default if no data
+                        document.getElementById('user-level-display').textContent = 'LVL 1';
+                    }
+                });
+            } else {
+                // No user is signed in. Redirect to login.
+                window.location.href = '/login';
+            }
+        });
+
+        // Logout Logic
+        document.getElementById('logout-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            auth.signOut().then(() => {
+                window.location.href = '/login';
+            });
+        });
+
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -9,7 +9,7 @@ try:
 except Exception:
     genai = None
 from dotenv import load_dotenv
-from utils import save_project_to_file, load_project_from_file, generate_csv, generate_pdf
+from utils import save_project_to_file, load_project_from_file, generate_csv, generate_pdf, generate_ics
 from agents import run_planning_pipeline
 
 # Load environment variables
@@ -45,6 +45,31 @@ def homepage():
 def index():
     """Render the main application interface."""
     return render_template('index.html')
+
+@app.route('/login')
+def login():
+    """Render the login/signup page."""
+    return render_template('login.html')
+
+@app.route('/dashboard')
+def dashboard():
+    """Render the Mission Control dashboard."""
+    return render_template('dashboard.html')
+
+@app.route('/projects')
+def projects():
+    """Render the Projects page."""
+    return render_template('projects.html')
+
+@app.route('/analytics')
+def analytics():
+    """Render the Analytics page."""
+    return render_template('analytics.html')
+
+@app.route('/settings')
+def settings():
+    """Render the Settings page."""
+    return render_template('settings.html')
 
 @app.route('/image/<path:filename>')
 def serve_image(filename):
@@ -261,6 +286,27 @@ def export_pdf():
     except Exception as e:
         app.logger.error(f"Error exporting PDF: {str(e)}")
         return jsonify({'error': 'Failed to export PDF'}), 500
+
+@app.route('/api/export_ics', methods=['POST'])
+def export_ics():
+    """Export project schedule to ICS format."""
+    try:
+        data = request.get_json()
+        
+        if 'project_data' not in data:
+            return jsonify({'error': 'Missing project_data'}), 400
+        
+        project_data = data['project_data']
+        ics_content = generate_ics(project_data)
+        
+        return jsonify({
+            'ics_content': ics_content,
+            'filename': f"{project_data.get('project_name', 'project')}_schedule.ics"
+        })
+    
+    except Exception as e:
+        app.logger.error(f"Error exporting ICS: {str(e)}")
+        return jsonify({'error': 'Failed to export ICS'}), 500
 
 @app.route('/api/chat', methods=['POST'])
 def chat():

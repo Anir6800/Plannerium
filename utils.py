@@ -81,6 +81,90 @@ def generate_csv(project_data: Dict[str, Any]) -> str:
         print(f"Error generating CSV: {e}")
         return ""
 
+def generate_ics(project_data: Dict[str, Any]) -> str:
+    """Generate an ICS calendar file from project data."""
+    try:
+        tasks = project_data.get('tasks', [])
+        schedule = project_data.get('schedule', [])
+        
+        ics_content = [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//Plannerium//Project Plan//EN",
+            "CALSCALE:GREGORIAN",
+            "METHOD:PUBLISH"
+        ]
+        
+        current_date = datetime.now()
+        if 'start_date' in project_data:
+            try:
+                current_date = datetime.fromisoformat(project_data['start_date'])
+            except:
+                pass
+
+        # Create a mapping of task_id to task details
+        task_map = {t['id']: t for t in tasks}
+        
+        from datetime import timedelta
+        
+        for week in schedule:
+            week_start_str = week.get('week_start')
+            if week_start_str:
+                try:
+                    week_start = datetime.fromisoformat(week_start_str)
+                except:
+                    week_start = current_date
+            else:
+                week_start = current_date
+                
+            # Distribute tasks across the week (Mon-Fri)
+            week_tasks = week.get('tasks', [])
+            if not week_tasks:
+                continue
+                
+            days_offset = 0
+            for task_ref in week_tasks:
+                task_id = task_ref.get('task_id')
+                task = task_map.get(task_id)
+                
+                if not task:
+                    continue
+                    
+                # Simple scheduling: 1 task per day or spread out
+                task_date = week_start + timedelta(days=days_offset)
+                if task_date.weekday() > 4: # Skip weekends if possible
+                    task_date = week_start + timedelta(days=0) 
+                
+                # Format date for ICS (YYYYMMDD)
+                dt_start = task_date.strftime('%Y%m%d')
+                dt_end = (task_date + timedelta(days=1)).strftime('%Y%m%d') # All day event
+                
+                now_str = datetime.now().strftime('%Y%m%dT%H%M%SZ')
+                
+                # Clean description
+                desc = task.get('description', '').replace('\n', '\\n').replace(',', '\\,')
+                
+                ics_content.extend([
+                    "BEGIN:VEVENT",
+                    f"DTSTAMP:{now_str}",
+                    f"UID:{task_id}@{project_data.get('project_name', 'plannerium').replace(' ', '_')}",
+                    f"DTSTART;VALUE=DATE:{dt_start}",
+                    f"DTEND;VALUE=DATE:{dt_end}",
+                    f"SUMMARY:{task.get('title', 'Task')}",
+                    f"DESCRIPTION:{desc} (Est: {task.get('estimated_hours', 0)}h)",
+                    "STATUS:CONFIRMED",
+                    "END:VEVENT"
+                ])
+                
+                days_offset = (days_offset + 1) % 5
+
+        ics_content.append("END:VCALENDAR")
+        
+        return "\r\n".join(ics_content)
+    except Exception as e:
+        print(f"Error generating ICS: {e}")
+        return ""
+
 def generate_pdf(project_data: Dict[str, Any]) -> bytes:
     """Generate PDF content from project data."""
     try:

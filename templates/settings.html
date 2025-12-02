@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-section {
+        margin-bottom: 40px;
+        border: 1px solid #333;
+        padding: 20px;
+        background: #050505;
+    }
+
+    .settings-title {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+        color: #fff;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 10px;
+        background: #111;
+        border: 1px solid #333;
+        color: #fff;
+        font-family: 'Fira Code', monospace;
+    }
+
+    .btn-settings {
+        padding: 10px 20px;
+        background: transparent;
+        border: 1px solid #fff;
+        color: #fff;
+        font-family: 'Fira Code', monospace;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+    }
+
+    .btn-settings:hover {
+        background: #fff;
+        color: #000;
+    }
+
+    .btn-danger {
+        border-color: #ff4444;
+        color: #ff4444;
+    }
+
+    .btn-danger:hover {
+        background: #ff4444;
+        color: #fff;
+    }
+
+    .toggle-switch {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+
+    .toggle-input {
+        appearance: none;
+        width: 40px;
+        height: 20px;
+        background: #333;
+        border-radius: 10px;
+        position: relative;
+        transition: background 0.3s;
+    }
+
+    .toggle-input::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s;
+    }
+
+    .toggle-input:checked {
+        background: #fff;
+    }
+
+    .toggle-input:checked::after {
+        transform: translateX(20px);
+        background: #000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>System Configuration</h1>
+    <p>Adjust user parameters and interface protocols.</p>
+    <br>
+
+    <!-- Profile Settings -->
+    <div class="settings-section">
+        <div class="settings-title">Identity Profile</div>
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+            <div>
+                <img id="avatar-preview" src="https://via.placeholder.com/100" class="avatar-preview" alt="Avatar">
+            </div>
+            <div style="flex-grow: 1;">
+                <div class="form-group">
+                    <label class="form-label">DISPLAY_NAME</label>
+                    <input type="text" id="display-name" class="form-input" placeholder="Enter codename...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">AVATAR_URL</label>
+                    <input type="text" id="avatar-url" class="form-input" placeholder="https://...">
+                </div>
+                <button class="btn-settings" onclick="saveProfile()">[ UPDATE IDENTITY ]</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interface Settings -->
+    <div class="settings-section">
+        <div class="settings-title">Interface Protocols</div>
+        <div class="form-group">
+            <label class="toggle-switch">
+                <input type="checkbox" id="cyber-mode-toggle" class="toggle-input" onchange="toggleCyberMode()">
+                <span>CYBER_MODE (Scanline Effects)</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Data Management -->
+    <div class="settings-section">
+        <div class="settings-title">Data Management</div>
+        <p style="color: #888; margin-bottom: 15px; font-size: 0.9rem;">
+            WARNING: This action will clear local cache and reset interface preferences.
+            Server-side mission data will remain intact.
+        </p>
+        <button class="btn-settings btn-danger" onclick="purgeData()">[ PURGE LOCAL DATA ]</button>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Load Profile Data
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            const profileRef = database.ref('users/' + user.uid + '/profile');
+            profileRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('display-name').value = data.displayName || '';
+                    document.getElementById('avatar-url').value = data.avatarUrl || '';
+                    if (data.avatarUrl) {
+                        document.getElementById('avatar-preview').src = data.avatarUrl;
+                    }
+                }
+            });
+        }
+    });
+
+    // Initialize Cyber Mode Toggle State
+    document.addEventListener('DOMContentLoaded', () => {
+        const isCyberMode = localStorage.getItem('cyberMode') === 'true';
+        document.getElementById('cyber-mode-toggle').checked = isCyberMode;
+    });
+
+    function saveProfile() {
+        const user = auth.currentUser;
+        if (user) {
+            const displayName = document.getElementById('display-name').value;
+            const avatarUrl = document.getElementById('avatar-url').value;
+
+            database.ref('users/' + user.uid + '/profile').update({
+                displayName: displayName,
+                avatarUrl: avatarUrl
+            }).then(() => {
+                alert('IDENTITY UPDATED SUCCESSFULLY');
+                if (avatarUrl) {
+                    document.getElementById('avatar-preview').src = avatarUrl;
+                }
+            }).catch(error => {
+                alert('ERROR: ' + error.message);
+            });
+        }
+    }
+
+    function toggleCyberMode() {
+        const isEnabled = document.getElementById('cyber-mode-toggle').checked;
+        localStorage.setItem('cyberMode', isEnabled);
+        if (isEnabled) {
+            document.body.classList.add('scanlines');
+        } else {
+            document.body.classList.remove('scanlines');
+        }
+    }
+
+    function purgeData() {
+        if (confirm('CONFIRM PURGE: This will clear local settings and log you out. Proceed?')) {
+            localStorage.clear();
+            auth.signOut().then(() => {
+                window.location.href = '/login';
+            });
+        }
+    }
+</script>
+{% endblock %}

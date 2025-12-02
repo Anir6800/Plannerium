@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plannerium | Identity Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cyberpunk.css') }}">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+        }
+        .login-container {
+            width: 400px;
+            padding: 40px;
+            border: 1px solid #333;
+            background-color: #111;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px; right: -1px; bottom: -1px;
+            border: 1px solid transparent;
+            z-index: -1;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .login-subtitle {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus {
+            border-color: #fff;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            font-family: 'Fira Code', monospace;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .error-message {
+            color: #ff4444;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        /* Glitch effect decoration */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            animation: scan 3s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+    </style>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="{{ url_for('static', filename='firebase-init.js') }}"></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="scan-line"></div>
+        <div class="login-header">
+            <div class="login-title">IDENTITY VERIFICATION</div>
+            <div class="login-subtitle">ACCESS RESTRICTED // AUTHORIZED PERSONNEL ONLY</div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">LOGIN</div>
+            <div class="tab" onclick="switchTab('signup')">SIGNUP</div>
+        </div>
+
+        <form id="auth-form">
+            <div class="form-group">
+                <label class="form-label">EMAIL_ADDRESS</label>
+                <input type="email" id="email" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">ACCESS_CODE (PASSWORD)</label>
+                <input type="password" id="password" class="form-input" required>
+            </div>
+            <button type="submit" class="btn" id="submit-btn">AUTHENTICATE</button>
+            <div class="error-message" id="error-message"></div>
+        </form>
+
+        <div class="divider" style="margin: 20px 0; text-align: center; color: #666; font-size: 0.8rem;">-- OR --</div>
+        <button type="button" class="btn google-btn" id="google-btn" style="background: #000; color: #fff; border: 1px solid #fff; border-radius: 50px; display: flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;">
+            <span style="margin-right: 10px; font-weight: bold;">[ G ]</span> ACCESS VIA GOOGLE
+        </button>
+        <style>
+            .google-btn:hover {
+                background: #fff !important;
+                color: #000 !important;
+                box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            }
+        </style>
+    </div>
+
+    <!-- Custom Cursor (Hidden by default here, but we need to handle it) -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <script>
+        let isLogin = true;
+
+        // Cursor Logic for Login Page
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        const loginContainer = document.querySelector('.login-container');
+
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hide cursor when over login container
+        loginContainer.addEventListener('mouseenter', () => {
+            cursorDot.style.opacity = '0';
+            cursorOutline.style.opacity = '0';
+        });
+
+        loginContainer.addEventListener('mouseleave', () => {
+            cursorDot.style.opacity = '1';
+            cursorOutline.style.opacity = '1';
+        });
+
+        function switchTab(mode) {
+            isLogin = mode === 'login';
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            // Find the clicked tab
+            const tabs = document.querySelectorAll('.tab');
+            if (mode === 'login') tabs[0].classList.add('active');
+            else tabs[1].classList.add('active');
+            
+            document.getElementById('submit-btn').textContent = isLogin ? 'AUTHENTICATE' : 'INITIALIZE PROTOCOL';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('error-message');
+
+            try {
+                if (isLogin) {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } else {
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    // Initialize User Profile
+                    await database.ref('users/' + userCredential.user.uid + '/profile').set({
+                        level: 1,
+                        xp: 0,
+                        joined: new Date().toISOString()
+                    });
+                }
+                window.location.href = '/dashboard';
+            } catch (error) {
+                errorEl.textContent = 'ERROR: ' + error.message.toUpperCase();
+                errorEl.style.display = 'block';
+            }
+        });
+
+        // Google Login Logic
+        document.getElementById('google-btn').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            const errorEl = document.getElementById('error-message');
+            
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
+                
+                // Check if user profile exists
+                const userRef = database.ref('users/' + user.uid + '/profile');
+                userRef.once('value', (snapshot) => {
+                    if (!snapshot.exists()) {
+                        // Create profile if new user
+                        userRef.set({
+                            level: 1,
+                            xp: 0,
+                            joined: new Date().toISOString(),
+                            displayName: user.displayName,
+                            photoURL: user.photoURL
+                        });
+                    }
+                });
+                
+                window.location.href = '/dashboard';
+            } catch (error) {
+                console.error(error);
+                errorEl.textContent = 'AUTH ERROR: ' + error.message.toUpperCase();
+                errorEl.style.display = 'block';
+            }
+        });
+
+        // Check if already logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                window.location.href = '/dashboard';
+            }
+        });
+    </script>
+</body>
+</html>
