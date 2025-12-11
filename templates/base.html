@@ -21,24 +21,6 @@
     <div class="cursor-dot" id="cursor-dot"></div>
     <div class="cursor-outline" id="cursor-outline"></div>
 
-    <style>
-        .live-indicator {
-            color: #0f0;
-            margin-left: 8px;
-            animation: pulse 2s infinite;
-        }
-
-        .live-dot {
-            color: #0f0;
-            text-shadow: 0 0 10px rgba(0,255,0,0.8);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-    </style>
-
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar">
@@ -48,7 +30,7 @@
             
             <nav class="nav-links">
                 <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
-                    [ Mission Control ]<span id="mission-control-live" class="live-indicator" style="display: none;"><span class="live-dot">●</span></span>
+                    [ Mission Control ]
                 </a>
                 <a href="{{ url_for('projects') }}" class="nav-link {% if request.endpoint == 'projects' %}active{% endif %}">
                     [ Projects ]
@@ -338,21 +320,6 @@
             auth.signOut().then(() => {
                 window.location.href = '/login';
             });
-        });
-
-        // Mission Control Live Indicator
-        function updateMissionControlIndicator(show) {
-            const indicator = document.getElementById('mission-control-live');
-            if (indicator) {
-                indicator.style.display = show ? 'inline' : 'none';
-            }
-        }
-
-        // Check if project is active (global variable set by execution.js)
-        window.addEventListener('load', () => {
-            if (window.currentProjectId) {
-                updateMissionControlIndicator(true);
-            }
         });
 
     </script>
