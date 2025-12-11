@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plannerium | Initialize</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cyberpunk.css') }}">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #000;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding-bottom: 50px;
+        }
+        .terminal-container {
+            text-align: center;
+            z-index: 10;
+            margin-top: 20vh;
+            margin-bottom: 60px;
+        }
+        .typewriter {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.5rem;
+            color: #fff;
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: 0.15em;
+            border-right: 0.15em solid orange;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange }
+        }
+        .enter-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 4s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .enter-btn:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .cap-card h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+        .cap-card p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* New Sections CSS */
+        .mission-directive {
+            max-width: 800px;
+            margin: 80px auto 40px;
+            text-align: center;
+            padding: 30px;
+            border-left: 3px solid orange;
+            background: rgba(255,255,255,0.02);
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 5s;
+            z-index: 10;
+            position: relative;
+        }
+
+        .mission-directive h2 {
+            font-family: 'Fira Code', monospace;
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .mission-directive p {
+            font-family: 'Fira Code', monospace;
+            color: #ccc;
+            font-size: 1rem;
+            line-height: 1.6;
+            text-transform: uppercase;
+        }
+
+        .agent-section {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 10;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 5.5s;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #fff;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .tilt-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 25px 15px;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tilt-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: orange;
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.2);
+        }
+
+        .agent-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 0 0 10px orange;
+        }
+
+        .agent-codename {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            color: orange;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .agent-role {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+            width: 100%;
+        }
+
+        .agent-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        footer {
+            margin-top: 100px;
+            margin-bottom: 40px;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            color: #555;
+            font-size: 0.8rem;
+            z-index: 10;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 6s;
+        }
+
+        .glitch-link {
+            color: #888;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .glitch-link:hover {
+            color: #fff;
+            text-shadow: 2px 0 red, -2px 0 blue;
+            text-decoration: underline;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: orange;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            box-shadow: 0 0 10px orange;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 165, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9998;
+            pointer-events: none;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <div class="background-grid"></div>
+    <div class="terminal-container">
+        <div class="typewriter">INITIALIZING PLANNERIUM PROTOCOL...</div>
+        <a href="/login">
+            <button class="enter-btn">[ ENTER SYSTEM ]</button>
+        </a>
+    </div>
+
+    <div class="capabilities-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; width: 90%; margin-top: 60px; opacity: 0; animation: fadeIn 1s forwards; animation-delay: 4.5s; z-index: 10;">
+        <div class="cap-card glass-card">
+            <h3>Multi-Agent Reasoning</h3>
+            <p>Autonomous agents decompose complex goals into actionable plans.</p>
+        </div>
+        <div class="cap-card glass-card">
+            <h3>Temporal Scheduling</h3>
+            <p>Advanced algorithms optimize timelines and resource allocation.</p>
+        </div>
+        <div class="cap-card glass-card">
+            <h3>Risk Probability Matrix</h3>
+            <p>Predictive analysis of potential bottlenecks and failure points.</p>
+        </div>
+        <div class="cap-card glass-card">
+            <h3>Cyber-Security Protocols</h3>
+            <p>Enterprise-grade encryption and access control mechanisms.</p>
+        </div>
+    </div>
+    <div class="mission-directive">
+        <h2>MISSION DIRECTIVE</h2>
+        <p>PLANNERIUM IS AN ADVANCED COGNITIVE ARCHITECTURE DESIGNED TO BRIDGE THE GAP BETWEEN INTENT AND EXECUTION. UTILIZING A MULTI-AGENT SWARM, IT TRANSFORMS ABSTRACT GOALS INTO BATTLE-TESTED STRATEGIES.</p>
+    </div>
+
+    <div class="agent-section">
+        <h2 class="section-title">THE AGENT SWARM</h2>
+        <div class="agent-grid">
+            <!-- Agent 1: Decomposition -->
+            <div class="tilt-card">
+                <div class="agent-icon">💠</div>
+                <div class="agent-codename">FRACTAL</div>
+                <div class="agent-role">Structural Architect</div>
+                <div class="agent-desc">Deconstructs complex objectives into atomic executable units.</div>
+            </div>
+            <!-- Agent 2: Prioritization -->
+            <div class="tilt-card">
+                <div class="agent-icon">🌪️</div>
+                <div class="agent-codename">VORTEX</div>
+                <div class="agent-role">Logic Core</div>
+                <div class="agent-desc">Computes impact-to-effort ratios to establish mission hierarchy.</div>
+            </div>
+            <!-- Agent 3: Scheduling -->
+            <div class="tilt-card">
+                <div class="agent-icon">⏳</div>
+                <div class="agent-codename">CHRONOS</div>
+                <div class="agent-role">Temporal Engine</div>
+                <div class="agent-desc">Allocates temporal resources to maximize velocity and minimize friction.</div>
+            </div>
+            <!-- Agent 4: Risk Analysis -->
+            <div class="tilt-card">
+                <div class="agent-icon">🛡️</div>
+                <div class="agent-codename">SENTINEL</div>
+                <div class="agent-role">Threat Detector</div>
+                <div class="agent-desc">Scans for probability variance and critical path dependencies.</div>
+            </div>
+            <!-- Agent 5: Optimization -->
+            <div class="tilt-card">
+                <div class="agent-icon">⚡</div>
+                <div class="agent-codename">CATALYST</div>
+                <div class="agent-role">Efficiency Booster</div>
+                <div class="agent-desc">Refines system parameters to reduce waste and accelerate output.</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>SYSTEM ARCHITECT: <a href="https://aniruddh-rathod.netlify.app/" class="glitch-link" target="_blank">ANIRUDDH RATHOD</a></p>
+    </footer>
+
+    <script>
+        const cursorDot = document.querySelector('[data-cursor-dot]');
+        const cursorOutline = document.querySelector('[data-cursor-outline]');
+
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hover effects
+        const interactiveElements = 'a, button, .tilt-card';
+        document.body.addEventListener('mouseover', (e) => {
+            if (e.target.matches(interactiveElements) || e.target.closest(interactiveElements)) {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.backgroundColor = 'rgba(255, 165, 0, 0.1)';
+            }
+        });
+
+        document.body.addEventListener('mouseout', (e) => {
+            if (e.target.matches(interactiveElements) || e.target.closest(interactiveElements)) {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            }
+        });
+    </script>
+</body>
+</html>
